@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scrapy5 - Sell Your Scrap Online | Mumbai</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #4a5568;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #4a5568;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #667eea;
+        }
+
+        .hero {
+            padding: 4rem 0;
+            text-align: center;
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .search-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin: 2rem 0;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 0.8rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f7fafc;
+            color: #4a5568;
+            border: 2px solid #e2e8f0;
+        }
+
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        /* Price Management Styles */
+        .price-management {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+            display: none;
+        }
+
+        .price-management.show {
+            display: block;
+        }
+
+        .price-edit-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .price-group {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .price-group h4 {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .price-input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 0.25rem 0;
+            font-size: 0.9rem;
+        }
+
+        .categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .category-card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-color: #667eea;
+        }
+
+        .category-card.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .category-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .main-content {
+            background: white;
+            margin: 2rem 0;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .tabs {
+            display: flex;
+            background: #f7fafc;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            background: none;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .tab.active {
+            background: white;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .tab-content {
+            padding: 2rem;
+        }
+
+        .sell-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        /* Camera Styles */
+        .camera-section {
+            border: 2px dashed #e2e8f0;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            background: #f9f9f9;
+        }
+
+        .camera-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .camera-video {
+            width: 100%;
+            max-width: 400px;
+            border-radius: 8px;
+            margin-top: 1rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .camera-canvas {
+            display: none;
+        }
+
+        .capture-controls {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .photo-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .photo-item {
+            position: relative;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+            background: white;
+        }
+
+        .photo-item img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+        }
+
+        .photo-remove {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .photo-remove:hover {
+            background: #ff4757;
+            color: white;
+        }
+
+        .photo-count {
+            background: #667eea;
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+        }
+
+        .footer {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 2rem 0;
+            text-align: center;
+            color: #4a5568;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-links a {
+            color: #4a5568;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: #667eea;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .success-message {
+            background: #10b981;
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .error-message {
+            background: #ef4444;
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .search-bar {
+                flex-direction: column;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+
+            .camera-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .capture-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <div class="logo">♻️ Scrapy5</div>
+                <ul class="nav-links">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#sell">Sell Scrap</a></li>
+                    <li><a href="#pricing">Pricing</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Sell Your Scrap, Earn Cash</h1>
+            <p>Mumbai's premier platform for selling scrap materials at the best prices</p>
+            
+            <div class="search-section">
+                <h2 style="text-align: center; margin-bottom: 1.5rem; color: #4a5568;">What Type of Scrap Do You Want to Sell?</h2>
+                
+                <div class="categories">
+                    <div class="category-card" onclick="selectCategory('metal')">
+                        <div class="category-icon">🔩</div>
+                        <div>Metal Scrap</div>
+                        <div style="font-size: 0.8rem; color: #666; margin-top: 0.5rem;">Iron, Copper, Aluminum</div>
+                    </div>
+                    <div class="category-card" onclick="selectCategory('electronics')">
+                        <div class="category-icon">💻</div>
+                        <div>Electronics</div>
+                        <div style="font-size: 0.8rem; color: #666; margin-top: 0.5rem;">Phones, Laptops, Components</div>
+                    </div>
+                    <div class="category-card" onclick="selectCategory('paper')">
+                        <div class="category-icon">📄</div>
+                        <div>Paper & Cardboard</div>
+                        <div style="font-size: 0.8rem; color: #666; margin-top: 0.5rem;">Books, Newspapers, Boxes</div>
+                    </div>
+                    <div class="category-card" onclick="selectCategory('plastic')">
+                        <div class="category-icon">♻️</div>
+                        <div>Plastic</div>
+                        <div style="font-size: 0.8rem; color: #666; margin-top: 0.5rem;">Bottles, Containers, Bags</div>
+                    </div>
+                    <div class="category-card" onclick="selectCategory('automotive')">
+                        <div class="category-icon">🚗</div>
+                        <div>Automotive</div>
+                        <div style="font-size: 0.8rem; color: #666; margin-top: 0.5rem;">Batteries, Tires, Parts</div>
+                    </div>
+                    <div class="category-card" onclick="selectCategory('construction')">
+                        <div class="category-icon">🏗️</div>
+                        <div>Construction</div>
+                        <div style="font-size: 0.8rem; color: #666; margin-top: 0.5rem;">Steel, Concrete, Tiles</div>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button class="btn btn-primary" onclick="showSellForm()" style="font-size: 1.2rem; padding: 1rem 2rem;">Start Selling Now</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <main class="container">
+        <div class="main-content">
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('sell')">Sell Your Scrap</button>
+                <button class="tab" onclick="showTab('pricing')">Our Pricing</button>
+                <button class="tab" onclick="showTab('how-it-works')">How It Works</button>
+            </div>
+
+            <div id="sell-content" class="tab-content">
+                <form id="listingForm" class="sell-form">
+                    <h2>Sell Your Scrap to Scrapy5</h2>
+                    <p style="text-align: center; margin-bottom: 2rem; color: #666;">Fill out the form below and we'll contact you with the best price for your scrap materials.</p>
+                    
+                    <div id="messageContainer"></div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Material Type</label>
+                        <select class="form-input" id="materialType" name="materialType" required>
+                            <option value="">Select material type</option>
+                            <option value="metal">Metal Scrap (Iron, Copper, Aluminum, etc.)</option>
+                            <option value="electronics">Electronics (Phones, Laptops, Components)</option>
+                            <option value="paper">Paper & Cardboard (Books, Newspapers, Boxes)</option>
+                            <option value="plastic">Plastic (Bottles, Containers, Bags)</option>
+                            <option value="automotive">Automotive (Batteries, Tires, Parts)</option>
+                            <option value="construction">Construction (Steel, Concrete, Tiles)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Scrap Description</label>
+                        <input type="text" class="form-input" id="listingTitle" name="listingTitle" placeholder="e.g., Copper Wire, Old Smartphones, Cardboard Boxes" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Detailed Description</label>
+                        <textarea class="form-input form-textarea" id="listingDescription" name="listingDescription" placeholder="Describe your scrap material - condition, quantity, any special notes..." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Estimated Quantity</label>
+                        <input type="text" class="form-input" id="listingQuantity" name="listingQuantity" placeholder="e.g., 50kg, 100 pieces, 10 boxes" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Your Name</label>
+                        <input type="text" class="form-input" id="sellerName" name="sellerName" placeholder="Enter your full name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Location in Mumbai</label>
+                        <input type="text" class="form-input" id="listingLocation" name="listingLocation" placeholder="e.g., 101 Shanti Apartments, LBS marg, Mulund West" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Contact Number</label>
+                        <input type="tel" class="form-input" id="listingContact" name="listingContact" placeholder="Your mobile number" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" class="form-input" id="sellerEmail" name="sellerEmail" placeholder="Your email address" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            Upload Photos of Your Scrap 
+                            <span class="photo-count" id="photoCount">0/5</span>
+                        </label>
+                        <div class="camera-section">
+                            <div class="camera-buttons" id="cameraButtons">
+                                <button type="button" class="btn btn-primary" onclick="startCamera()">📷 Take Photo</button>
+                                <button type="button" class="btn btn-secondary" onclick="document.getElementById('fileInput').click()">📁 Upload Photos</button>
+                            </div>
+                            
+                            <input type="file" id="fileInput" accept="image/*" multiple style="display: none;" onchange="handleFileSelect(event)">
+                            
+                            <video id="cameraVideo" class="camera-video hidden" autoplay playsinline></video>
+                            <canvas id="cameraCanvas" class="camera-canvas"></canvas>
+                            
+                            <div class="capture-controls hidden" id="captureControls">
+                                <button type="button" class="btn btn-primary" onclick="capturePhoto()">📸 Capture Photo</button>
+                                <button type="button" class="btn btn-secondary" onclick="stopCamera()">❌ Cancel</button>
+                            </div>
+                        </div>
+                        
+                        <div class="photo-preview" id="photoPreview"></div>
+                        
+                        <p style="font-size: 0.9rem; color: #666; margin-top: 0.5rem; text-align: center;">
+                            📸 Photos help us provide accurate pricing. You can upload up to 5 photos.
+                        </p>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Submit Scrap Details</button>
+                </form>
+            </div>
+
+            <div id="pricing-content" class="tab-content hidden">
+                <h2>Current Scrap Prices in Mumbai</h2>
+                <p style="text-align: center; margin-bottom: 2rem; color: #666;">Our competitive rates (prices may vary based on quality and quantity)</p>
+                
+                <!-- Price Management Section -->
+                <div style="text-align: center; margin-bottom: 1rem;">
+                    <button type="button" class="btn btn-secondary" onclick="togglePriceManagement()">⚙️ Update Prices</button>
+                </div>
+                
+                <div id="priceManagement" class="price-management">
+                    <h3>Price Management Panel</h3>
+                    <p>Update current scrap prices. Changes will be reflected immediately.</p>
+                    
+                    <div class="price-edit-form">
+                        <div class="price-group">
+                            <h4>🔩 Metal Scrap</h4>
+                            <label>Iron (₹/kg):</label>
+                            <input type="number" class="price-input" id="price-iron" value="25" min="0" step="1">
+                            <label>Copper (₹/kg):</label>
+                            <input type="number" class="price-input" id="price-copper" value="500" min="0" step="10">
+                            <label>Aluminum (₹/kg):</label>
+                            <input type="number" class="price-input" id="price-aluminum" value="120" min="0" step="5">
+                        </div>
+                        
+                        <div class="price-group">
+                            <h4>💻 Electronics</h4>
+                            <label>Smartphones (₹/piece):</label>
+                            <input type="number" class="price-input" id="price-smartphones" value="200" min="0" step="50">
+                            <label>Laptops (₹/piece):</label>
+                            <input type="number" class="price-input" id="price-laptops" value="500" min="0" step="100">
+                            <label>Components (₹/kg):</label>
+                            <input type="number" class="price-input" id="price-components" value="50" min="0" step="10">
+                        </div>
+                        
+                        <div class="price-group">
+                            <h4>📄 Paper & Cardboard</h4>
+                            <label>Newspapers (₹/kg):</label>
+                            <input type="number" class="price-input" id="price-newspapers" value="8" min="0" step="0.5">
+                            <label>Books (₹/kg):</label>
+                            <input type="number" class="price-input" id="price-books" value="6" min="0" step="0.5">
+                            <label>Cardboard (₹/kg):</label>
+                            <input type="number" class="price-input" id="price-cardboard" value="5" min="0" step="0.5">
+                        </div>
+                        
+                        <div class="price-group">
+                            <h4>♻️ Plastic</h4>
+                            <label>PET Bottles (₹/kg):</label>
+                            <input type="number" class="price-input" id="price-pet" value="15" min="0" step="1">
+                            <label>Containers (₹/kg):</label>
+                            <input type="number" class="price-input" id="price-containers" value="10" min="0" step="1">
+                            <label>Mixed Plastic (₹/kg):</label>
+                            <input type="number" class="price-input" id="price-mixed-plastic" value="5" min="0" step="1">
+                        </div>
+                        
+                        <div class="price-group">
+                            <h4>🚗 Automotive</h4>
+                            <label>Car Batteries (₹/piece):</label>
+                            <input type="number" class="price-input" id="price-batteries" value="150" min="0" step="10">
+                            <label>Tires (₹/piece):</label>
+                            <input type="number" class="price-input" id="price-tires" value="50" min="0" step="10">
+                            <label>Parts (₹/kg):</label>
+                            <input type="number" class="price-input" id="price-auto-parts" value="20" min="0" step="5">
+                        </div>
+                        
+                        <div class="price-group">
+                            <h4>🏗️ Construction</h4>
+                            <label>Steel Rods (₹/kg):</label>
+                            <input type="number" class="price-input" id="price-steel" value="35" min="0" step="1">
+                            <label>Concrete (₹/kg):</label>
+                            <input type="number" class="price-input" id="price-concrete" value="2" min="0" step="0.5">
+                            <label>Tiles (₹/kg):</label>
+                            <input type="number" class="price-input" id="price-tiles" value="3" min="0" step="0.5">
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 1rem;">
+                        <button type="button" class="btn btn-primary" onclick="updatePrices()">💾 Save All Prices</button>
+                        <button type="button" class="btn btn-secondary" onclick="resetPrices()">🔄 Reset to Default</button>
+                    </div>
+                </div>
+                
+                <div class="pricing-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin: 2rem 0;">
+                    <div class="pricing-card" style="background: #f7fafc; padding: 1.5rem; border-radius: 10px; text-align: center;">
+                        <div style="font-size: 2rem; margin-bottom: 1rem;">🔩</div>
+                        <h3>Metal Scrap</h3>
+                        <div style="margin: 1rem 0;">
+                            <div style="margin: 0.5rem 0;" id="display-iron">Iron: ₹25-30/kg</div>
+                            <div style="margin: 0.5rem 0;" id="display-copper">Copper: ₹500-600/kg</div>
+                            <div style="margin: 0.5rem 0;" id="display-aluminum">Aluminum: ₹120-150/kg</div>
+                        </div>
+                    </div>
+                    
+                    <div class="pricing-card" style="background: #f7fafc; padding: 1.5rem; border-radius: 10px; text-align: center;">
+                        <div style="font-size: 2rem; margin-bottom: 1rem;">💻</div>
+                        <h3>Electronics</h3>
+                        <div style="margin: 1rem 0;">
+                            <div style="margin: 0.5rem 0;" id="display-smartphones">Smartphones: ₹200-2000/piece</div>
+                            <div style="margin: 0.5rem 0;" id="display-laptops">Laptops: ₹500-5000/piece</div>
+                            <div style="margin: 0.5rem 0;" id="display-components">Components: ₹50-500/kg</div>
+                        </div>
+                    </div>
+                    
+                    <div class="pricing-card" style="background: #f7fafc; padding: 1.5rem; border-radius: 10px; text-align: center;">
+                        <div style="font-size: 2rem; margin-bottom: 1rem;">📄</div>
+                        <h3>Paper & Cardboard</h3>
+                        <div style="margin: 1rem 0;">
+                            <div style="margin: 0.5rem 0;" id="display-newspapers">Newspapers: ₹8-12/kg</div>
+                            <div style="margin: 0.5rem 0;" id="display-books">Books: ₹6-10/kg</div>
+                            <div style="margin: 0.5rem 0;" id="display-cardboard">Cardboard: ₹5-8/kg</div>
+                        </div>
+                    </div>
+                    
+                    <div class="pricing-card" style="background: #f7fafc; padding: 1.5rem; border-radius: 10px; text-align: center;">
+                        <div style="font-size: 2rem; margin-bottom: 1rem;">♻️</div>
+                        <h3>Plastic</h3>
+                        <div style="margin: 1rem 0;">
+                            <div style="margin: 0.5rem 0;" id="display-pet">PET Bottles: ₹15-20/kg</div>
+                            <div style="margin: 0.5rem 0;" id="display-containers">Containers: ₹10-15/kg</div>
+                            <div style="margin: 0.5rem 0;" id="display-mixed-plastic">Mixed Plastic: ₹5-10/kg</div>
+                        </div>
+                    </div>
+                    
+                    <div class="pricing-card" style="background: #f7fafc; padding: 1.5rem; border-radius: 10px; text-align: center;">
+                        <div style="font-size: 2rem; margin-bottom: 1rem;">🚗</div>
+                        <h3>Automotive</h3>
+                        <div style="margin: 1rem 0;">
+                            <div style="margin: 0.5rem 0;" id="display-batteries">Car Batteries: ₹150-200/piece</div>
+                            <div style="margin: 0.5rem 0;" id="display-tires">Tires: ₹50-100/piece</div>
+                            <div style="margin: 0.5rem 0;" id="display-auto-parts">Parts: ₹20-100/kg</div>
+                        </div>
+                    </div>
+                    
+                    <div class="pricing-card" style="background: #f7fafc; padding: 1.5rem; border-radius: 10px; text-align: center;">
+                        <div style="font-size: 2rem; margin-bottom: 1rem;">🏗️</div>
+                        <h3>Construction</h3>
+                        <div style="margin: 1rem 0;">
+                            <div style="margin: 0.5rem 0;" id="display-steel">Steel Rods: ₹35-45/kg</div>
+                            <div style="margin: 0.5rem 0;" id="display-concrete">Concrete: ₹2-5/kg</div>
+                            <div style="margin: 0.5rem 0;" id="display-tiles">Tiles: ₹3-8/kg</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="background: #667eea; color: white; padding: 2rem; border-radius: 10px; text-align: center; margin: 2rem 0;">
+                    <h3>Get the Best Price for Your Scrap!</h3>
+                    <p style="margin: 1rem 0;">Our experts will evaluate your materials and offer competitive rates based on current market prices.</p>
+                    <button class="btn btn-secondary" onclick="showTab('sell')" style="background: white; color: #667eea;">Submit Your Scrap Details</button>
+                </div>
+            </div>
+
+            <div id="how-it-works-content" class="tab-content hidden">
+                <h2>How Scrapy5 Works</h2>
+                <p style="text-align: center; margin-bottom: 2rem; color: #666;">Simple, transparent, and profitable way to sell your scrap in Mumbai</p>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin: 2rem 0;">
+                    <div style="text-align: center; padding: 2rem;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">📝</div>
+                        <h3>1. Submit Your Scrap</h3>
+                        <p>Fill out our simple form with details about your scrap materials. Include type, quantity, and photos.</p>
+                    </div>
+                    
+                    <div style="text-align: center; padding: 2rem;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">📞</div>
+                        <h3>2. Get Contacted</h3>
+                        <p>Our team will contact you within 24 hours to discuss pricing and arrange pickup.</p>
+                    </div>
+                    
+                    <div style="text-align: center; padding: 2rem;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">🚚</div>
+                        <h3>3. Free Pickup</h3>
+                        <p>We'll come to your location in Mumbai for free pickup of your scrap materials.</p>
+                    </div>
+                    
+                    <div style="text-align: center; padding: 2rem;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">💰</div>
+                        <h3>4. Get Paid</h3>
+                        <p>Receive instant payment in cash or bank transfer at the best market rates.</p>
+                    </div>
+                </div>
+
+                <div style="background: #f7fafc; padding: 2rem; border-radius: 10px; margin: 2rem 0;">
+                    <h3>Why Choose Scrapy5?</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin: 1rem 0;">
+                        <div>✅ Mumbai's trusted scrap buyer</div>
+                        <div>✅ Best market prices guaranteed</div>
+                        <div>✅ Free pickup across Mumbai</div>
+                        <div>✅ Instant payment options</div>
+                        <div>✅ Transparent pricing</div>
+                        <div>✅ Environmentally responsible</div>
+                    </div>
+                </div>
+                
+                <div style="background: #667eea; color: white; padding: 2rem; border-radius: 10px; text-align: center; margin: 2rem 0;">
+                    <h3>Ready to Sell Your Scrap?</h3>
+                    <p style="margin: 1rem 0;">Join hundreds of satisfied customers in Mumbai who trust Scrapy5 for their scrap selling needs.</p>
+                    <button class="btn btn-secondary" onclick="showTab('sell')" style="background: white; color: #667eea;">Start Selling Now</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-links">
+                <a href="#privacy">Privacy Policy</a>
+                <a href="#terms">Terms of Service</a>
+                <a href="#support">Support</a>
+                <a href="#blog">Blog</a>
+            </div>
+            <p>&copy; 2025 Scrapy5. All rights reserved. Mumbai's trusted scrap buyer since 2020.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Global variables
+        let capturedPhotos = [];
+        let uploadedFiles = [];
+        let stream = null;
+        
+        // Price management data structure
+        let currentPrices = {
+            iron: { base: 25, range: 5 },
+            copper: { base: 500, range: 100 },
+            aluminum: { base: 120, range: 30 },
+            smartphones: { base: 200, range: 1800 },
+            laptops: { base: 500, range: 4500 },
+            components: { base: 50, range: 450 },
+            newspapers: { base: 8, range: 4 },
+            books: { base: 6, range: 4 },
+            cardboard: { base: 5, range: 3 },
+            pet: { base: 15, range: 5 },
+            containers: { base: 10, range: 5 },
+            'mixed-plastic': { base: 5, range: 5 },
+            batteries: { base: 150, range: 50 },
+            tires: { base: 50, range: 50 },
+            'auto-parts': { base: 20, range: 80 },
+            steel: { base: 35, range: 10 },
+            concrete: { base: 2, range: 3 },
+            tiles: { base: 3, range: 5 }
+        };
+
+        // Form submission handling
+        document.addEventListener("DOMContentLoaded", function () {
+            console.log("🟢 Page loaded successfully");
+            
+            const form = document.getElementById("listingForm");
+            if (!form) {
+                console.error("❌ Form with id 'listingForm' not found!");
+                return;
+            }
+            
+            console.log("✅ Form found, adding event listener");
+            
+            form.addEventListener("submit", function (event) {
+                console.log("🚀 Form submission triggered");
+                event.preventDefault();
+                
+                const submitButton = form.querySelector('button[type="submit"]');
+                const originalText = submitButton.textContent;
+                submitButton.textContent = 'Submitting...';
+                submitButton.disabled = true;
+                
+                try {
+                    const formData = new FormData(form);
+                    
+                    // Clear existing file inputs and add all files
+                    formData.delete('fileInput');
+                    
+                    // Add uploaded files
+                    uploadedFiles.forEach((file, index) => {
+                        formData.append("fileInput", file);
+                    });
+                    
+                    // Convert captured photos to files and add them
+                    capturedPhotos.forEach((photoData, index) => {
+                        const blob = dataURLtoBlob(photoData);
+                        const file = new File([blob], `captured_photo_${index + 1}.jpg`, { type: 'image/jpeg' });
+                        formData.append("fileInput", file);
+                    });
+                    
+                    console.log(`📁 Total files being sent: ${uploadedFiles.length + capturedPhotos.length}`);
+                    console.log("🌐 Sending POST request to /submit_listing");
+
+                    fetch("/submit_listing", {
+                        method: "POST",
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            console.log("✅ Success!");
+                            showMessage("✅ Success! Your listing was submitted.", 'success');
+                            resetForm();
+                        } else {
+                            console.log("❌ Server error:", data.message);
+                            showMessage("❌ Failed: " + data.message, 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error("💥 Network error:", error);
+                        showMessage("❌ Network error occurred during submission.", 'error');
+                    })
+                    .finally(() => {
+                        submitButton.textContent = originalText;
+                        submitButton.disabled = false;
+                    });
+                    
+                } catch (error) {
+                    console.error("💥 JavaScript error:", error);
+                    showMessage("❌ Error occurred during submission.", 'error');
+                    submitButton.textContent = originalText;
+                    submitButton.disabled = false;
+                }
+            });
+            
+            // Initialize prices display
+            updatePriceDisplays();
+        });
+
+        // Helper function to convert dataURL to Blob
+        function dataURLtoBlob(dataURL) {
+            const arr = dataURL.split(',');
+            const mime = arr[0].match(/:(.*?);/)[1];
+            const bstr = atob(arr[1]);
+            let n = bstr.length;
+            const u8arr = new Uint8Array(n);
+            while (n--) {
+                u8arr[n] = bstr.charCodeAt(n);
+            }
+            return new Blob([u8arr], { type: mime });
+        }
+
+        // Reset form function
+        function resetForm() {
+            document.getElementById("listingForm").reset();
+            capturedPhotos = [];
+            uploadedFiles = [];
+            updatePhotoCount();
+            displayPhotos();
+        }
+
+        // Show message function
+        function showMessage(message, type) {
+            const messageContainer = document.getElementById('messageContainer');
+            messageContainer.innerHTML = `<div class="${type}-message">${message}</div>`;
+            
+            setTimeout(() => {
+                messageContainer.innerHTML = '';
+            }, 5000);
+        }
+
+        // Category selection
+        function selectCategory(category) {
+            document.querySelectorAll('.category-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            event.target.closest('.category-card').classList.add('selected');
+            document.getElementById('materialType').value = category;
+        }
+
+        // Navigation functions
+        function showSellForm() {
+            showTab('sell');
+            document.querySelector('.tab[onclick="showTab(\'sell\')"]').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.getElementById(tabName + '-content').classList.remove('hidden');
+            event.target.classList.add('active');
+        }
+
+        // Photo management functions
+        function updatePhotoCount() {
+            const photoCount = document.getElementById('photoCount');
+            const count = uploadedFiles.length + capturedPhotos.length;
+            photoCount.textContent = `${count}/5`;
+        }
+
+        function handleFileSelect(event) {
+            const files = Array.from(event.target.files);
+            const remainingSlots = 5 - (uploadedFiles.length + capturedPhotos.length);
+            
+            if (files.length > remainingSlots) {
+                showMessage(`You can only add ${remainingSlots} more photos. Maximum 5 photos allowed.`, 'error');
+                files.splice(remainingSlots);
+            }
+            
+            uploadedFiles = uploadedFiles.concat(files);
+            console.log(`📁 Files selected: ${files.length}, Total: ${uploadedFiles.length + capturedPhotos.length}`);
+            
+            displayPhotos();
+            updatePhotoCount();
+        }
+
+        function displayPhotos() {
+            const preview = document.getElementById('photoPreview');
+            preview.innerHTML = '';
+            
+            // Display uploaded files
+            uploadedFiles.forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const photoItem = document.createElement('div');
+                    photoItem.className = 'photo-item';
+                    photoItem.innerHTML = `
+                        <img src="${e.target.result}" alt="Upload ${index + 1}">
+                        <button type="button" class="photo-remove" onclick="removeUploadedPhoto(${index})">&times;</button>
+                    `;
+                    preview.appendChild(photoItem);
+                };
+                reader.readAsDataURL(file);
+            });
+            
+            // Display captured photos
+            capturedPhotos.forEach((photo, index) => {
+                const photoItem = document.createElement('div');
+                photoItem.className = 'photo-item';
+                photoItem.innerHTML = `
+                    <img src="${photo}" alt="Captured ${index + 1}">
+                    <button type="button" class="photo-remove" onclick="removeCapturedPhoto(${index})">&times;</button>
+                `;
+                preview.appendChild(photoItem);
+            });
+        }
+
+        function removeUploadedPhoto(index) {
+            uploadedFiles.splice(index, 1);
+            displayPhotos();
+            updatePhotoCount();
+        }
+
+        function removeCapturedPhoto(index) {
+            capturedPhotos.splice(index, 1);
+            displayPhotos();
+            updatePhotoCount();
+        }
+
+        // Camera functions
+        async function startCamera() {
+            const totalPhotos = uploadedFiles.length + capturedPhotos.length;
+            if (totalPhotos >= 5) {
+                showMessage("Maximum 5 photos allowed. Please remove some photos first.", 'error');
+                return;
+            }
+            
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        facingMode: 'environment',
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    } 
+                });
+                
+                const video = document.getElementById('cameraVideo');
+                const controls = document.getElementById('captureControls');
+                const buttons = document.getElementById('cameraButtons');
+                
+                video.srcObject = stream;
+                video.classList.remove('hidden');
+                controls.classList.remove('hidden');
+                buttons.style.display = 'none';
+                
+                console.log("📷 Camera started");
+            } catch (error) {
+                console.error("❌ Camera error:", error);
+                showMessage("Could not access camera. Please check permissions or use the upload option.", 'error');
+            }
+        }
+
+        function capturePhoto() {
+            const video = document.getElementById('cameraVideo');
+            const canvas = document.getElementById('cameraCanvas');
+            const context = canvas.getContext('2d');
+            
+            // Set canvas dimensions to match video
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            
+            // Draw video frame to canvas
+            context.drawImage(video, 0, 0);
+            
+            // Convert to data URL with compression
+            const photoData = canvas.toDataURL('image/jpeg', 0.8);
+            capturedPhotos.push(photoData);
+            
+            console.log("📸 Photo captured");
+            showMessage("Photo captured successfully!", 'success');
+            
+            displayPhotos();
+            updatePhotoCount();
+            stopCamera();
+        }
+
+        function stopCamera() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+            }
+            
+            const video = document.getElementById('cameraVideo');
+            const controls = document.getElementById('captureControls');
+            const buttons = document.getElementById('cameraButtons');
+            
+            video.classList.add('hidden');
+            controls.classList.add('hidden');
+            buttons.style.display = 'flex';
+            
+            console.log("📷 Camera stopped");
+        }
+
+        // Price Management Functions
+        function togglePriceManagement() {
+            const panel = document.getElementById('priceManagement');
+            if (panel.classList.contains('show')) {
+                panel.classList.remove('show');
+            } else {
+                panel.classList.add('show');
+                loadCurrentPrices();
+            }
+        }
+
+        function loadCurrentPrices() {
+            // Load saved prices from localStorage or use defaults
+            const savedPrices = localStorage.getItem('scrapy5_prices');
+            if (savedPrices) {
+                currentPrices = JSON.parse(savedPrices);
+            }
+            
+            // Update input fields
+            Object.keys(currentPrices).forEach(key => {
+                const input = document.getElementById(`price-${key}`);
+                if (input) {
+                    input.value = currentPrices[key].base;
+                }
+            });
+        }
+
+        function updatePrices() {
+            try {
+                // Get values from input fields
+                Object.keys(currentPrices).forEach(key => {
+                    const input = document.getElementById(`price-${key}`);
+                    if (input && input.value) {
+                        currentPrices[key].base = parseInt(input.value);
+                    }
+                });
+                
+                // Save to localStorage
+                localStorage.setItem('scrapy5_prices', JSON.stringify(currentPrices));
+                
+                // Update displays
+                updatePriceDisplays();
+                
+                showMessage("✅ Prices updated successfully!", 'success');
+                
+                // Hide price management panel
+                document.getElementById('priceManagement').classList.remove('show');
+                
+            } catch (error) {
+                console.error("Error updating prices:", error);
+                showMessage("❌ Error updating prices. Please try again.", 'error');
+            }
+        }
+
+        function resetPrices() {
+            // Reset to default values
+            currentPrices = {
+                iron: { base: 25, range: 5 },
+                copper: { base: 500, range: 100 },
+                aluminum: { base: 120, range: 30 },
+                smartphones: { base: 200, range: 1800 },
+                laptops: { base: 500, range: 4500 },
+                components: { base: 50, range: 450 },
+                newspapers: { base: 8, range: 4 },
+                books: { base: 6, range: 4 },
+                cardboard: { base: 5, range: 3 },
+                pet: { base: 15, range: 5 },
+                containers: { base: 10, range: 5 },
+                'mixed-plastic': { base: 5, range: 5 },
+                batteries: { base: 150, range: 50 },
+                tires: { base: 50, range: 50 },
+                'auto-parts': { base: 20, range: 80 },
+                steel: { base: 35, range: 10 },
+                concrete: { base: 2, range: 3 },
+                tiles: { base: 3, range: 5 }
+            };
+            
+            // Clear localStorage
+            localStorage.removeItem('scrapy5_prices');
+            
+            // Update input fields
+            loadCurrentPrices();
+            
+            // Update displays
+            updatePriceDisplays();
+            
+            showMessage("✅ Prices reset to default values!", 'success');
+        }
+
+        function updatePriceDisplays() {
+            // Load saved prices
+            const savedPrices = localStorage.getItem('scrapy5_prices');
+            if (savedPrices) {
+                currentPrices = JSON.parse(savedPrices);
+            }
+            
+            // Update display elements
+            const priceDisplays = {
+                'iron': 'Iron',
+                'copper': 'Copper', 
+                'aluminum': 'Aluminum',
+                'smartphones': 'Smartphones',
+                'laptops': 'Laptops',
+                'components': 'Components',
+                'newspapers': 'Newspapers',
+                'books': 'Books',
+                'cardboard': 'Cardboard',
+                'pet': 'PET Bottles',
+                'containers': 'Containers',
+                'mixed-plastic': 'Mixed Plastic',
+                'batteries': 'Car Batteries',
+                'tires': 'Tires',
+                'auto-parts': 'Parts',
+                'steel': 'Steel Rods',
+                'concrete': 'Concrete',
+                'tiles': 'Tiles'
+            };
+            
+            Object.keys(priceDisplays).forEach(key => {
+                const element = document.getElementById(`display-${key}`);
+                if (element && currentPrices[key]) {
+                    const { base, range } = currentPrices[key];
+                    const min = base;
+                    const max = base + range;
+                    const unit = ['smartphones', 'laptops', 'batteries', 'tires'].includes(key) ? '/piece' : '/kg';
+                    element.textContent = `${priceDisplays[key]}: ₹${min}-${max}${unit}`;
+                }
+            });
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updatePhotoCount();
+            updatePriceDisplays();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+import os
+import uuid
+from datetime import datetime
+from flask import Flask, render_template, request, jsonify, send_from_directory
+from werkzeug.utils import secure_filename
+from flask_sqlalchemy import SQLAlchemy
+
+
+
+app = Flask(__name__)
+
+# Configuration
+app.config['UPLOAD_FOLDER'] = 'uploads'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///scrapy5.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
+db = SQLAlchemy(app)
+
+# Define the database model
+class Submission(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    material_type = db.Column(db.String(100))
+    title = db.Column(db.String(100))
+    description = db.Column(db.Text)
+    quantity = db.Column(db.String(50))
+    name = db.Column(db.String(100))
+    location = db.Column(db.String(100))
+    contact = db.Column(db.String(50))
+    email = db.Column(db.String(100))
+    photos = db.Column(db.Text)  # filenames joined by commas
+    submission_date = db.Column(db.String(100))
+
+
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+    
+@app.route('/submit_listing', methods=['POST'])
+def submit_listing():
+    print("🔔 /submit_listing triggered")
+    try:
+        material_type = request.form.get('materialType')
+        title = request.form.get('listingTitle')
+        description = request.form.get('listingDescription')
+        quantity = request.form.get('listingQuantity')
+        name = request.form.get('sellerName')
+        location = request.form.get('listingLocation')
+        contact = request.form.get('listingContact')
+        email = request.form.get('sellerEmail')
+
+        photo_files = request.files.getlist('fileInput')
+        photo_filenames = []
+        for photo in photo_files:
+            if photo:
+                filename = secure_filename(photo.filename)
+                save_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                photo.save(save_path)
+                photo_filenames.append(filename)
+
+        photos = ','.join(photo_filenames)
+
+        new_submission = Submission(
+            material_type=material_type,
+            title=title,
+            description=description,
+            quantity=quantity,
+            name=name,
+            location=location,
+            contact=contact,
+            email=email,
+            photos=photos,
+            submission_date=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+        )
+        print("Saving submission with title:", title)
+        db.session.add(new_submission)
+        db.session.commit()
+
+        return jsonify({'success': True, 'message': 'Data saved successfully.'})
+
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({'success': False, 'message': f'Failed to submit listing. Error: {str(e)}'})
+
+
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()  # This creates the tables in scrapy5.db
+    app.run(host='0.0.0.0', port=5000, debug=True)
+
+
+

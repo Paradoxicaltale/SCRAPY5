@@ -413,6 +413,32 @@
             margin-bottom: 10px;
         }
 
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            z-index: 2000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast-success {
+            background: linear-gradient(135deg, #4caf50, #45a049);
+        }
+
+        .toast-error {
+            background: linear-gradient(135deg, #f44336, #d32f2f);
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 15px;
@@ -502,7 +528,7 @@
         </div>
 
         <!-- Loading State -->
-        <div class="loading" id="loading">
+        <div class="loading" id="loading" style="display: none;">
             <div class="spinner"></div>
             <div>Loading submissions...</div>
         </div>
@@ -510,7 +536,7 @@
         <!-- Error State -->
         <div class="error-message" id="errorMessage" style="display: none;">
             <h3>❌ Error Loading Submissions</h3>
-            <p>Failed to fetch submissions from the server. Please check your connection and try again.</p>
+            <p id="errorText">Failed to fetch submissions from the server. Please check your connection and try again.</p>
             <button class="refresh-btn" onclick="loadSubmissions()" style="margin-top: 15px;">
                 🔄 Retry
             </button>
@@ -534,6 +560,9 @@
         </div>
     </div>
 
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
     <script>
         let allSubmissions = [];
         let filteredSubmissions = [];
@@ -547,7 +576,7 @@
             document.getElementById('materialFilter').addEventListener('change', filterSubmissions);
         });
 
-        // Fetch submissions from the API
+        // Fetch submissions from the API with fallback to demo data
         async function loadSubmissions() {
             const loading = document.getElementById('loading');
             const errorMessage = document.getElementById('errorMessage');
@@ -564,10 +593,15 @@
                 const response = await fetch('/admin/submissions');
                 
                 if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    throw new Error(`Server returned ${response.status}: ${response.statusText}`);
                 }
                 
                 const data = await response.json();
+                
+                if (!Array.isArray(data)) {
+                    throw new Error('Server returned invalid data format (expected array)');
+                }
+                
                 allSubmissions = data;
                 filteredSubmissions = [...allSubmissions];
                 
@@ -580,11 +614,105 @@
                     displaySubmissions();
                 }
                 
+                showToast('Submissions loaded successfully!', 'success');
+                
             } catch (error) {
                 console.error('Error fetching submissions:', error);
                 loading.style.display = 'none';
+                
+                // Try to load demo data as fallback
+                loadDemoData();
+                
+                // Show error with specific message
+                document.getElementById('errorText').textContent = 
+                    `Network Error: ${error.message}. Showing demo data instead.`;
                 errorMessage.style.display = 'block';
+                
+                showToast('Using demo data - check your backend!', 'error');
             }
+        }
+
+        // Load demo data as fallback
+        function loadDemoData() {
+            allSubmissions = [
+                {
+                    id: 1,
+                    title: "Iron Scrap Collection",
+                    material_type: "metal",
+                    description: "Mixed iron pieces from construction site demolition. Clean and sorted by size. Good quality scrap metal ready for recycling.",
+                    name: "Amit Construction",
+                    contact: "+91 99887 66554",
+                    email: "amit@construction.com",
+                    location: "Mumbai, Maharashtra",
+                    photos: [
+                        "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=300&fit=crop&crop=center",
+                        "https://images.unsplash.com/photo-1565732838081-46238eb4e935?w=400&h=300&fit=crop&crop=center"
+                    ],
+                    created_at: new Date().toISOString()
+                },
+                {
+                    id: 2,
+                    title: "Computer Components Bulk",
+                    material_type: "electronics",
+                    description: "Various computer parts including motherboards, RAM, hard drives, and circuit boards from office equipment upgrades. All components are non-functional but perfect for precious metal recovery.",
+                    name: "TechRecycle Pro",
+                    contact: "+91 88776 65543",
+                    email: "info@techrecycle.in",
+                    location: "Bangalore, Karnataka",
+                    photos: [
+                        "https://images.unsplash.com/photo-1555617981-dac3880eac6e?w=400&h=300&fit=crop&crop=center",
+                        "https://images.unsplash.com/photo-1597733153203-a54d0fbc47de?w=400&h=300&fit=crop&crop=center",
+                        "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=400&h=300&fit=crop&crop=center"
+                    ],
+                    created_at: new Date(Date.now() - 1000 * 60 * 60).toISOString()
+                },
+                {
+                    id: 3,
+                    title: "PET Bottle Collection",
+                    material_type: "plastic",
+                    description: "Clean PET bottles sorted by color and size. Perfect condition for recycling into new products. All bottles are cleaned and labels removed.",
+                    name: "EcoClean Services",
+                    contact: "+91 77665 54432",
+                    email: "contact@ecoclean.co.in",
+                    location: "Chennai, Tamil Nadu",
+                    photos: [
+                        "https://images.unsplash.com/photo-1532634726-8121448eb6c6?w=400&h=300&fit=crop&crop=center"
+                    ],
+                    created_at: new Date(Date.now() - 1000 * 60 * 90).toISOString()
+                },
+                {
+                    id: 4,
+                    title: "Office Paper Waste",
+                    material_type: "paper",
+                    description: "High-quality office paper waste including documents, letterheads, and clean printouts. All confidential materials have been shredded appropriately.",
+                    name: "Green Office Solutions",
+                    contact: "+91 66554 43321",
+                    email: "waste@greenoffice.in",
+                    location: "Delhi, Delhi",
+                    photos: [],
+                    created_at: new Date(Date.now() - 1000 * 60 * 120).toISOString()
+                },
+                {
+                    id: 5,
+                    title: "Car Battery Collection",
+                    material_type: "automotive",
+                    description: "Used car batteries from automotive service center. Batteries are drained and ready for lead acid recovery. Various sizes and brands available.",
+                    name: "Auto Parts Hub",
+                    contact: "+91 55443 32210",
+                    email: "batteries@autoparts.in",
+                    location: "Pune, Maharashtra",
+                    photos: [
+                        "https://images.unsplash.com/photo-1609301307446-d8b9c7b5d6c5?w=400&h=300&fit=crop&crop=center",
+                        "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=400&h=300&fit=crop&crop=center"
+                    ],
+                    created_at: new Date(Date.now() - 1000 * 60 * 180).toISOString()
+                }
+            ];
+            
+            filteredSubmissions = [...allSubmissions];
+            updateStats();
+            displaySubmissions();
+            document.getElementById('loading').style.display = 'none';
         }
 
         // Update statistics
@@ -593,9 +721,32 @@
             const materialTypes = new Set(allSubmissions.map(s => s.material_type)).size;
             const totalImages = allSubmissions.reduce((sum, s) => sum + (s.photos ? s.photos.length : 0), 0);
 
-            document.getElementById('totalSubmissions').textContent = totalSubmissions;
-            document.getElementById('materialTypes').textContent = materialTypes;
-            document.getElementById('totalImages').textContent = totalImages;
+            // Animate counters
+            animateCounter('totalSubmissions', totalSubmissions);
+            animateCounter('materialTypes', materialTypes);
+            animateCounter('totalImages', totalImages);
+        }
+
+        // Animate counter numbers
+        function animateCounter(elementId, targetValue) {
+            const element = document.getElementById(elementId);
+            const startValue = 0;
+            const duration = 1000;
+            const startTime = performance.now();
+            
+            function updateCounter(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const currentValue = Math.floor(startValue + (targetValue - startValue) * progress);
+                
+                element.textContent = currentValue;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(updateCounter);
+                }
+            }
+            
+            requestAnimationFrame(updateCounter);
         }
 
         // Display submissions in the grid
@@ -669,12 +820,12 @@
                             <span>${formatDate(submission.created_at || submission.timestamp || new Date().toISOString())}</span>
                         </div>
                         <div>
-                            ${submission.contact ? `
-                                <button class="action-btn btn-contact" onclick="contactSubmitter('${submission.contact}', '${submission.email || ''}')">
+                            ${submission.contact || submission.email ? `
+                                <button class="action-btn btn-contact" onclick="contactSubmitter('${submission.contact || ''}', '${submission.email || ''}', '${submission.name || 'Submitter'}')">
                                     📞 Contact
                                 </button>
                             ` : ''}
-                            <button class="action-btn btn-delete" onclick="deleteSubmission(${submission.id || Math.random()})">
+                            <button class="action-btn btn-delete" onclick="deleteSubmission(${submission.id || Math.random()}, '${submission.title || 'this submission'}')">
                                 🗑️ Delete
                             </button>
                         </div>
@@ -694,7 +845,8 @@
                     (submission.description || '').toLowerCase().includes(searchTerm) ||
                     (submission.name || '').toLowerCase().includes(searchTerm) ||
                     (submission.material_type || '').toLowerCase().includes(searchTerm) ||
-                    (submission.contact || '').toLowerCase().includes(searchTerm);
+                    (submission.contact || '').toLowerCase().includes(searchTerm) ||
+                    (submission.location || '').toLowerCase().includes(searchTerm);
 
                 const matchesMaterial = !materialFilter || 
                     (submission.material_type || '').toLowerCase() === materialFilter.toLowerCase();
@@ -709,72 +861,4 @@
         function formatDate(dateString) {
             try {
                 const date = new Date(dateString);
-                return date.toLocaleDateString('en-IN', {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-            } catch (error) {
-                return 'Recently';
-            }
-        }
-
-        // Contact submitter
-        function contactSubmitter(phone, email) {
-            if (phone && email) {
-                const choice = confirm(`Contact via:\n\nPhone: ${phone}\nEmail: ${email}\n\nClick OK to call, Cancel to email`);
-                if (choice) {
-                    window.open(`tel:${phone}`);
-                } else {
-                    window.open(`mailto:${email}?subject=Regarding your scrap submission`);
-                }
-            } else if (phone) {
-                window.open(`tel:${phone}`);
-            } else if (email) {
-                window.open(`mailto:${email}?subject=Regarding your scrap submission`);
-            }
-        }
-
-        // Delete submission (placeholder function)
-        function deleteSubmission(submissionId) {
-            if (confirm('Are you sure you want to delete this submission? This action cannot be undone.')) {
-                // In a real application, you would make an API call to delete the submission
-                alert(`Delete functionality would be implemented here for submission ID: ${submissionId}`);
-                // For now, just remove from the local array
-                allSubmissions = allSubmissions.filter(s => (s.id || Math.random()) !== submissionId);
-                filterSubmissions();
-                updateStats();
-            }
-        }
-
-        // Modal functions
-        function openModal(imageSrc) {
-            const modal = document.getElementById('imageModal');
-            const modalImg = document.getElementById('modalImage');
-            
-            modal.style.display = 'block';
-            modalImg.src = imageSrc;
-        }
-
-        function closeModal() {
-            document.getElementById('imageModal').style.display = 'none';
-        }
-
-        // Close modal when clicking outside the image
-        document.getElementById('imageModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeModal();
-            }
-        });
-
-        // Close modal with Escape key
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeModal();
-            }
-        });
-    </script>
-</body>
-</html>
+                const

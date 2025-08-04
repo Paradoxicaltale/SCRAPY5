@@ -37,6 +37,12 @@ class Submission(db.Model):
 def index():
     return render_template('index.html')
 
+# 🆕 NEW: Admin panel route
+@app.route('/admin')
+def admin_page():
+    """Serve the admin panel"""
+    return render_template('admin.html')
+
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
@@ -161,13 +167,21 @@ def uploaded_file(filename):
 
 @app.route('/admin/submissions')
 def view_submissions():
-    """Admin route to view all submissions"""
+    """Admin route to view all submissions - UPDATED for proper image URLs"""
     try:
         submissions = Submission.query.order_by(Submission.id.desc()).all()
         submissions_data = []
         
         for submission in submissions:
-            photo_list = submission.photos.split(',') if submission.photos else []
+            # 🔧 FIXED: Convert photo filenames to proper URLs
+            photo_list = []
+            if submission.photos:
+                photo_list = [
+                    f"/uploads/{fname.strip()}"
+                    for fname in submission.photos.split(',')
+                    if fname.strip()
+                ]
+            
             submissions_data.append({
                 'id': submission.id,
                 'material_type': submission.material_type,
@@ -178,7 +192,7 @@ def view_submissions():
                 'location': submission.location,
                 'contact': submission.contact,
                 'email': submission.email,
-                'photos': photo_list,
+                'photos': photo_list,  # Now contains proper URLs like ["/uploads/abc123_image.jpg"]
                 'submission_date': submission.submission_date
             })
         
@@ -224,5 +238,6 @@ if __name__ == '__main__':
     print("📁 Upload folder:", app.config['UPLOAD_FOLDER'])
     print("💾 Database:", app.config['SQLALCHEMY_DATABASE_URI'])
     print("🌐 Server will be available at: http://localhost:5000")
+    print("🔧 Admin panel will be available at: http://localhost:5000/admin")
     
     app.run(host='0.0.0.0', port=5000, debug=True)

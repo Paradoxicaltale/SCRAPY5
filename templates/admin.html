@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - Scrapy5 Submissions</title>
+    <title>Scrapy5 Admin Panel - Manage Scrap Listings & Prices</title>
     <style>
         * {
             margin: 0;
@@ -18,88 +18,168 @@
             color: #333;
         }
 
-        .container {
-            max-width: 1400px;
+        .admin-container {
+            max-width: 1800px;
             margin: 0 auto;
-            padding: 20px;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(15px);
+            min-height: 100vh;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.2);
         }
 
-        .header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-
-        .header h1 {
-            color: #2c5530;
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+        .admin-header {
+            background: linear-gradient(135deg, #2c5530, #4a7c59);
+            color: white;
+            padding: 30px 40px;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            gap: 15px;
-        }
-
-        .header p {
-            color: #666;
-            font-size: 1.1rem;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 25px;
-            text-align: center;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            border-left: 5px solid #4caf50;
-        }
-
-        .stat-card h3 {
-            font-size: 2rem;
-            color: #2c5530;
-            margin-bottom: 5px;
-        }
-
-        .stat-card p {
-            color: #666;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-size: 0.9rem;
-        }
-
-        .controls {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 30px;
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            flex-wrap: wrap;
+            position: sticky;
+            top: 0;
+            z-index: 100;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
         }
 
-        .search-box {
+        .admin-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .admin-logo h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+        }
+
+        .admin-nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-btn {
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .admin-content {
+            padding: 30px 40px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #4caf50;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(76, 175, 80, 0.2);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            color: #4caf50;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #2e7d32;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .section-tabs {
+            display: flex;
+            margin-bottom: 30px;
+            background: #f5f5f5;
+            border-radius: 10px;
+            padding: 5px;
+        }
+
+        .section-tab {
+            flex: 1;
+            padding: 15px 20px;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: #666;
+        }
+
+        .section-tab.active {
+            background: #4caf50;
+            color: white;
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .section-content {
+            display: none;
+        }
+
+        .section-content.active {
+            display: block;
+        }
+
+        .controls-bar {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            align-items: center;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .search-container {
             flex: 1;
             min-width: 300px;
             position: relative;
         }
 
-        .search-box input {
+        .search-input {
             width: 100%;
             padding: 12px 45px 12px 20px;
             border: 2px solid #e0e0e0;
@@ -108,7 +188,7 @@
             transition: all 0.3s ease;
         }
 
-        .search-box input:focus {
+        .search-input:focus {
             outline: none;
             border-color: #4caf50;
             box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
@@ -133,10 +213,8 @@
             min-width: 150px;
         }
 
-        .refresh-btn {
+        .action-btn {
             padding: 12px 25px;
-            background: linear-gradient(135deg, #4caf50, #45a049);
-            color: white;
             border: none;
             border-radius: 25px;
             cursor: pointer;
@@ -145,116 +223,128 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            text-decoration: none;
         }
 
-        .refresh-btn:hover {
+        .btn-primary {
+            background: linear-gradient(135deg, #4caf50, #45a049);
+            color: white;
+        }
+
+        .btn-primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(76, 175, 80, 0.4);
         }
 
-        .loading {
-            text-align: center;
-            padding: 60px;
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            background: linear-gradient(135deg, #2e7d32, #4caf50);
             color: white;
-            font-size: 1.2rem;
+            padding: 18px 15px;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
 
-        .spinner {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-top: 4px solid white;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 15px;
+        .data-table td {
+            padding: 18px 15px;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: top;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .submissions-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-            gap: 25px;
-        }
-
-        .submission-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-        }
-
-        .submission-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
-            border-color: #4caf50;
+        .data-table tr:hover {
+            background: rgba(76, 175, 80, 0.05);
         }
 
         .material-badge {
             display: inline-block;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
             text-transform: uppercase;
             color: white;
-            margin-bottom: 15px;
-            letter-spacing: 0.5px;
+            margin-bottom: 5px;
         }
 
-        .badge-metal { background: linear-gradient(135deg, #ff9800, #f57c00); }
-        .badge-electronics { background: linear-gradient(135deg, #2196f3, #1976d2); }
-        .badge-paper { background: linear-gradient(135deg, #795548, #5d4037); }
-        .badge-plastic { background: linear-gradient(135deg, #4caf50, #388e3c); }
-        .badge-automotive { background: linear-gradient(135deg, #f44336, #d32f2f); }
-        .badge-construction { background: linear-gradient(135deg, #607d8b, #455a64); }
+        .badge-metal { background: #ff9800; }
+        .badge-electronics { background: #2196f3; }
+        .badge-paper { background: #795548; }
+        .badge-plastic { background: #4caf50; }
+        .badge-automotive { background: #f44336; }
+        .badge-construction { background: #607d8b; }
 
-        .submission-title {
-            font-size: 1.4rem;
+        .listing-title {
             font-weight: 700;
-            color: #2c5530;
-            margin-bottom: 10px;
-            line-height: 1.3;
+            color: #2e7d32;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
         }
 
-        .submission-description {
+        .listing-description {
             color: #666;
-            line-height: 1.6;
-            margin-bottom: 20px;
+            line-height: 1.4;
+            max-width: 400px;
+            overflow: hidden;
+            text-overflow: ellipsis;
             display: -webkit-box;
             -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
-            overflow: hidden;
         }
 
-        .contact-info {
-            background: #f8f9fa;
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 20px;
+        .quantity-display {
+            background: linear-gradient(135deg, #ff9800, #f57c00);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            text-align: center;
+            white-space: nowrap;
         }
 
-        .contact-name {
+        .seller-info {
+            line-height: 1.6;
+        }
+
+        .seller-name {
             font-weight: 700;
-            color: #2c5530;
-            font-size: 1.1rem;
+            color: #2e7d32;
             margin-bottom: 8px;
+            font-size: 1.05rem;
         }
 
-        .contact-detail {
+        .contact-item {
             display: flex;
             align-items: center;
             gap: 8px;
-            margin: 5px 0;
+            margin: 4px 0;
             color: #555;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
         }
 
         .contact-icon {
@@ -262,30 +352,28 @@
             width: 16px;
         }
 
-        .images-gallery {
-            margin-bottom: 20px;
+        .location-badge {
+            background: linear-gradient(135deg, #2196f3, #1976d2);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-top: 8px;
+            display: inline-block;
         }
 
-        .images-title {
-            font-weight: 600;
-            color: #555;
-            margin-bottom: 10px;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .images-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-            gap: 10px;
+        .image-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            max-width: 300px;
         }
 
         .image-thumb {
-            width: 100%;
+            width: 80px;
             height: 80px;
             object-fit: cover;
-            border-radius: 10px;
+            border-radius: 8px;
             border: 2px solid #e0e0e0;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -300,55 +388,142 @@
         .no-images {
             color: #999;
             font-style: italic;
-            text-align: center;
             padding: 20px;
+            text-align: center;
             background: #f9f9f9;
-            border-radius: 10px;
+            border-radius: 8px;
             border: 2px dashed #ddd;
         }
 
-        .card-actions {
-            display: flex;
-            gap: 10px;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .action-btn {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 15px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.85rem;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .btn-contact {
-            background: linear-gradient(135deg, #2196f3, #1976d2);
-            color: white;
-        }
-
-        .btn-delete {
-            background: linear-gradient(135deg, #f44336, #d32f2f);
-            color: white;
-        }
-
-        .action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .submission-date {
-            color: #888;
-            font-size: 0.85rem;
+        .timestamp {
+            color: #666;
+            font-size: 0.9rem;
             display: flex;
             align-items: center;
             gap: 5px;
         }
 
+        .row-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .row-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-view {
+            background: #2196f3;
+            color: white;
+        }
+
+        .btn-contact {
+            background: #ff9800;
+            color: white;
+        }
+
+        .btn-delete {
+            background: #f44336;
+            color: white;
+        }
+
+        .row-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Price Management Styles */
+        .price-management {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .price-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 25px;
+        }
+
+        .price-category {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .price-category:hover {
+            border-color: #4caf50;
+            transform: translateY(-2px);
+        }
+
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .category-icon {
+            font-size: 2rem;
+        }
+
+        .category-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #2e7d32;
+        }
+
+        .price-item {
+            margin-bottom: 15px;
+        }
+
+        .price-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .price-input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .price-input:focus {
+            outline: none;
+            border-color: #4caf50;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        }
+
+        .price-actions {
+            text-align: center;
+            margin-top: 30px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -392,473 +567,344 @@
             color: #4caf50;
         }
 
-        .error-message {
-            background: rgba(244, 67, 54, 0.1);
-            color: #d32f2f;
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-            margin: 20px 0;
-            border: 2px solid rgba(244, 67, 54, 0.2);
-        }
-
         .empty-state {
             text-align: center;
             padding: 60px 30px;
-            color: white;
+            color: #666;
         }
 
         .empty-state h3 {
             font-size: 1.5rem;
             margin-bottom: 10px;
+            color: #4caf50;
         }
 
-        .toast {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 25px;
-            border-radius: 10px;
-            color: white;
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #4caf50;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .alert {
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 8px;
             font-weight: 600;
-            z-index: 2000;
-            transform: translateX(400px);
-            transition: transform 0.3s ease;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         }
 
-        .toast.show {
-            transform: translateX(0);
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
         }
 
-        .toast-success {
-            background: linear-gradient(135deg, #4caf50, #45a049);
-        }
-
-        .toast-error {
-            background: linear-gradient(135deg, #f44336, #d32f2f);
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
         }
 
         @media (max-width: 768px) {
-            .container {
-                padding: 15px;
-            }
-
-            .header h1 {
-                font-size: 2rem;
+            .admin-header {
                 flex-direction: column;
-                gap: 10px;
+                gap: 20px;
+                text-align: center;
             }
 
-            .controls {
+            .admin-nav {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .controls-bar {
                 flex-direction: column;
                 align-items: stretch;
             }
 
-            .search-box {
+            .search-container {
                 min-width: auto;
             }
 
-            .submissions-grid {
+            .stats-grid {
                 grid-template-columns: 1fr;
             }
 
-            .stats {
-                grid-template-columns: repeat(2, 1fr);
+            .data-table {
+                font-size: 0.8rem;
             }
 
-            .card-actions {
-                flex-direction: column;
-                gap: 10px;
+            .data-table th,
+            .data-table td {
+                padding: 10px 8px;
             }
-        }
 
-        @media (max-width: 480px) {
-            .stats {
-                grid-template-columns: 1fr;
+            .image-gallery {
+                max-width: 200px;
+            }
+
+            .image-thumb {
+                width: 60px;
+                height: 60px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="admin-container">
         <!-- Header -->
-        <div class="header">
-            <h1>
-                <span>♻️</span>
-                <span>Scrapy5 Admin Panel</span>
-            </h1>
-            <p>Manage and view all scrap material submissions</p>
-        </div>
-
-        <!-- Stats -->
-        <div class="stats" id="stats">
-            <div class="stat-card">
-                <h3 id="totalSubmissions">0</h3>
-                <p>Total Submissions</p>
+        <header class="admin-header">
+            <div class="admin-logo">
+                <span style="font-size: 2.5rem;">♻️</span>
+                <div>
+                    <h1>Scrapy5 Admin</h1>
+                    <p style="opacity: 0.8; font-size: 0.9rem;">scrapy5.com</p>
+                </div>
             </div>
-            <div class="stat-card">
-                <h3 id="materialTypes">0</h3>
-                <p>Material Types</p>
-            </div>
-            <div class="stat-card">
-                <h3 id="totalImages">0</h3>
-                <p>Total Images</p>
-            </div>
-        </div>
+            <nav class="admin-nav">
+                <button class="nav-btn active" onclick="showSection('dashboard')">
+                    📊 Dashboard
+                </button>
+                <button class="nav-btn" onclick="showSection('listings')">
+                    📋 Listings
+                </button>
+                <button class="nav-btn" onclick="showSection('pricing')">
+                    💰 Pricing
+                </button>
+                <a href="/" class="nav-btn">
+                    🌐 View Site
+                </a>
+            </nav>
+        </header>
 
-        <!-- Controls -->
-        <div class="controls">
-            <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Search submissions by title, material, or contact name...">
-                <span class="search-icon">🔍</span>
-            </div>
-            <select class="filter-select" id="materialFilter">
-                <option value="">All Materials</option>
-                <option value="metal">Metal</option>
-                <option value="electronics">Electronics</option>
-                <option value="paper">Paper</option>
-                <option value="plastic">Plastic</option>
-                <option value="automotive">Automotive</option>
-                <option value="construction">Construction</option>
-            </select>
-            <button class="refresh-btn" onclick="loadSubmissions()">
-                🔄 Refresh
-            </button>
-        </div>
-
-        <!-- Loading State -->
-        <div class="loading" id="loading" style="display: none;">
-            <div class="spinner"></div>
-            <div>Loading submissions...</div>
-        </div>
-
-        <!-- Error State -->
-        <div class="error-message" id="errorMessage" style="display: none;">
-            <h3>❌ Error Loading Submissions</h3>
-            <p id="errorText">Failed to fetch submissions from the server. Please check your connection and try again.</p>
-            <button class="refresh-btn" onclick="loadSubmissions()" style="margin-top: 15px;">
-                🔄 Retry
-            </button>
-        </div>
-
-        <!-- Submissions Grid -->
-        <div class="submissions-grid" id="submissionsGrid"></div>
-
-        <!-- Empty State -->
-        <div class="empty-state" id="emptyState" style="display: none;">
-            <h3>📋 No Submissions Found</h3>
-            <p>No scrap submissions match your current search and filter criteria.</p>
-        </div>
-    </div>
-
-    <!-- Image Modal -->
-    <div id="imageModal" class="modal">
-        <span class="modal-close" onclick="closeModal()">&times;</span>
-        <div class="modal-content">
-            <img id="modalImage" src="" alt="Full size image">
-        </div>
-    </div>
-
-    <!-- Toast Notification -->
-    <div id="toast" class="toast"></div>
-
-    <script>
-        let allSubmissions = [];
-        let filteredSubmissions = [];
-
-        // Load submissions on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            loadSubmissions();
-            
-            // Add event listeners for search and filter
-            document.getElementById('searchInput').addEventListener('input', filterSubmissions);
-            document.getElementById('materialFilter').addEventListener('change', filterSubmissions);
-        });
-
-        // Fetch submissions from the API with fallback to demo data
-        async function loadSubmissions() {
-            const loading = document.getElementById('loading');
-            const errorMessage = document.getElementById('errorMessage');
-            const submissionsGrid = document.getElementById('submissionsGrid');
-            const emptyState = document.getElementById('emptyState');
-
-            // Show loading state
-            loading.style.display = 'block';
-            errorMessage.style.display = 'none';
-            submissionsGrid.innerHTML = '';
-            emptyState.style.display = 'none';
-
-            try {
-                const response = await fetch('/admin/submissions');
-                
-                if (!response.ok) {
-                    throw new Error(`Server returned ${response.status}: ${response.statusText}`);
-                }
-                
-                const data = await response.json();
-                
-                if (!Array.isArray(data)) {
-                    throw new Error('Server returned invalid data format (expected array)');
-                }
-                
-                allSubmissions = data;
-                filteredSubmissions = [...allSubmissions];
-                
-                loading.style.display = 'none';
-                
-                if (allSubmissions.length === 0) {
-                    emptyState.style.display = 'block';
-                } else {
-                    updateStats();
-                    displaySubmissions();
-                }
-                
-                showToast('Submissions loaded successfully!', 'success');
-                
-            } catch (error) {
-                console.error('Error fetching submissions:', error);
-                loading.style.display = 'none';
-                
-                // Try to load demo data as fallback
-                loadDemoData();
-                
-                // Show error with specific message
-                document.getElementById('errorText').textContent = 
-                    `Network Error: ${error.message}. Showing demo data instead.`;
-                errorMessage.style.display = 'block';
-                
-                showToast('Using demo data - check your backend!', 'error');
-            }
-        }
-
-        // Load demo data as fallback
-        function loadDemoData() {
-            allSubmissions = [
-                {
-                    id: 1,
-                    title: "Iron Scrap Collection",
-                    material_type: "metal",
-                    description: "Mixed iron pieces from construction site demolition. Clean and sorted by size. Good quality scrap metal ready for recycling.",
-                    name: "Amit Construction",
-                    contact: "+91 99887 66554",
-                    email: "amit@construction.com",
-                    location: "Mumbai, Maharashtra",
-                    photos: [
-                        "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=300&fit=crop&crop=center",
-                        "https://images.unsplash.com/photo-1565732838081-46238eb4e935?w=400&h=300&fit=crop&crop=center"
-                    ],
-                    created_at: new Date().toISOString()
-                },
-                {
-                    id: 2,
-                    title: "Computer Components Bulk",
-                    material_type: "electronics",
-                    description: "Various computer parts including motherboards, RAM, hard drives, and circuit boards from office equipment upgrades. All components are non-functional but perfect for precious metal recovery.",
-                    name: "TechRecycle Pro",
-                    contact: "+91 88776 65543",
-                    email: "info@techrecycle.in",
-                    location: "Bangalore, Karnataka",
-                    photos: [
-                        "https://images.unsplash.com/photo-1555617981-dac3880eac6e?w=400&h=300&fit=crop&crop=center",
-                        "https://images.unsplash.com/photo-1597733153203-a54d0fbc47de?w=400&h=300&fit=crop&crop=center",
-                        "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=400&h=300&fit=crop&crop=center"
-                    ],
-                    created_at: new Date(Date.now() - 1000 * 60 * 60).toISOString()
-                },
-                {
-                    id: 3,
-                    title: "PET Bottle Collection",
-                    material_type: "plastic",
-                    description: "Clean PET bottles sorted by color and size. Perfect condition for recycling into new products. All bottles are cleaned and labels removed.",
-                    name: "EcoClean Services",
-                    contact: "+91 77665 54432",
-                    email: "contact@ecoclean.co.in",
-                    location: "Chennai, Tamil Nadu",
-                    photos: [
-                        "https://images.unsplash.com/photo-1532634726-8121448eb6c6?w=400&h=300&fit=crop&crop=center"
-                    ],
-                    created_at: new Date(Date.now() - 1000 * 60 * 90).toISOString()
-                },
-                {
-                    id: 4,
-                    title: "Office Paper Waste",
-                    material_type: "paper",
-                    description: "High-quality office paper waste including documents, letterheads, and clean printouts. All confidential materials have been shredded appropriately.",
-                    name: "Green Office Solutions",
-                    contact: "+91 66554 43321",
-                    email: "waste@greenoffice.in",
-                    location: "Delhi, Delhi",
-                    photos: [],
-                    created_at: new Date(Date.now() - 1000 * 60 * 120).toISOString()
-                },
-                {
-                    id: 5,
-                    title: "Car Battery Collection",
-                    material_type: "automotive",
-                    description: "Used car batteries from automotive service center. Batteries are drained and ready for lead acid recovery. Various sizes and brands available.",
-                    name: "Auto Parts Hub",
-                    contact: "+91 55443 32210",
-                    email: "batteries@autoparts.in",
-                    location: "Pune, Maharashtra",
-                    photos: [
-                        "https://images.unsplash.com/photo-1609301307446-d8b9c7b5d6c5?w=400&h=300&fit=crop&crop=center",
-                        "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=400&h=300&fit=crop&crop=center"
-                    ],
-                    created_at: new Date(Date.now() - 1000 * 60 * 180).toISOString()
-                }
-            ];
-            
-            filteredSubmissions = [...allSubmissions];
-            updateStats();
-            displaySubmissions();
-            document.getElementById('loading').style.display = 'none';
-        }
-
-        // Update statistics
-        function updateStats() {
-            const totalSubmissions = allSubmissions.length;
-            const materialTypes = new Set(allSubmissions.map(s => s.material_type)).size;
-            const totalImages = allSubmissions.reduce((sum, s) => sum + (s.photos ? s.photos.length : 0), 0);
-
-            // Animate counters
-            animateCounter('totalSubmissions', totalSubmissions);
-            animateCounter('materialTypes', materialTypes);
-            animateCounter('totalImages', totalImages);
-        }
-
-        // Animate counter numbers
-        function animateCounter(elementId, targetValue) {
-            const element = document.getElementById(elementId);
-            const startValue = 0;
-            const duration = 1000;
-            const startTime = performance.now();
-            
-            function updateCounter(currentTime) {
-                const elapsed = currentTime - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-                const currentValue = Math.floor(startValue + (targetValue - startValue) * progress);
-                
-                element.textContent = currentValue;
-                
-                if (progress < 1) {
-                    requestAnimationFrame(updateCounter);
-                }
-            }
-            
-            requestAnimationFrame(updateCounter);
-        }
-
-        // Display submissions in the grid
-        function displaySubmissions() {
-            const grid = document.getElementById('submissionsGrid');
-            const emptyState = document.getElementById('emptyState');
-
-            if (filteredSubmissions.length === 0) {
-                grid.innerHTML = '';
-                emptyState.style.display = 'block';
-                return;
-            }
-
-            emptyState.style.display = 'none';
-            
-            grid.innerHTML = filteredSubmissions.map(submission => `
-                <div class="submission-card">
-                    <div class="material-badge badge-${submission.material_type || 'metal'}">
-                        ${(submission.material_type || 'Unknown').toUpperCase()}
+        <!-- Main Content -->
+        <main class="admin-content">
+            <!-- Dashboard Section -->
+            <div id="dashboard-section" class="section-content active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon">📊</div>
+                            <div class="stat-value" id="totalSubmissions">0</div>
+                        </div>
+                        <div class="stat-label">Total Submissions</div>
                     </div>
                     
-                    <div class="submission-title">${submission.title || 'Untitled Submission'}</div>
-                    
-                    <div class="submission-description">
-                        ${submission.description || 'No description provided.'}
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon">🏭</div>
+                            <div class="stat-value" id="materialTypes">0</div>
+                        </div>
+                        <div class="stat-label">Material Types</div>
                     </div>
                     
-                    <div class="contact-info">
-                        <div class="contact-name">${submission.name || 'Anonymous'}</div>
-                        ${submission.contact ? `
-                            <div class="contact-detail">
-                                <span class="contact-icon">📞</span>
-                                <span>${submission.contact}</span>
-                            </div>
-                        ` : ''}
-                        ${submission.email ? `
-                            <div class="contact-detail">
-                                <span class="contact-icon">✉️</span>
-                                <span>${submission.email}</span>
-                            </div>
-                        ` : ''}
-                        ${submission.location ? `
-                            <div class="contact-detail">
-                                <span class="contact-icon">📍</span>
-                                <span>${submission.location}</span>
-                            </div>
-                        ` : ''}
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon">📸</div>
+                            <div class="stat-value" id="totalImages">0</div>
+                        </div>
+                        <div class="stat-label">Total Images</div>
                     </div>
                     
-                    ${submission.photos && submission.photos.length > 0 ? `
-                        <div class="images-gallery">
-                            <div class="images-title">Images (${submission.photos.length})</div>
-                            <div class="images-grid">
-                                ${submission.photos.map(photo => `
-                                    <img src="${photo}" class="image-thumb" 
-                                         onclick="openModal('${photo}')" 
-                                         alt="Submission photo"
-                                         onerror="this.style.display='none'">
-                                `).join('')}
-                            </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon">📅</div>
+                            <div class="stat-value" id="todaySubmissions">0</div>
                         </div>
-                    ` : `
-                        <div class="images-gallery">
-                            <div class="no-images">No images uploaded</div>
-                        </div>
-                    `}
+                        <div class="stat-label">Today's Submissions</div>
+                    </div>
                     
-                    <div class="card-actions">
-                        <div class="submission-date">
-                            <span>📅</span>
-                            <span>${formatDate(submission.created_at || submission.timestamp || new Date().toISOString())}</span>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon">⚖️</div>
+                            <div class="stat-value" id="avgQuantity">0</div>
                         </div>
-                        <div>
-                            ${submission.contact || submission.email ? `
-                                <button class="action-btn btn-contact" onclick="contactSubmitter('${submission.contact || ''}', '${submission.email || ''}', '${submission.name || 'Submitter'}')">
-                                    📞 Contact
-                                </button>
-                            ` : ''}
-                            <button class="action-btn btn-delete" onclick="deleteSubmission(${submission.id || Math.random()}, '${submission.title || 'this submission'}')">
-                                🗑️ Delete
-                            </button>
-                        </div>
+                        <div class="stat-label">Avg. Photos per Listing</div>
                     </div>
                 </div>
-            `).join('');
-        }
 
-        // Filter submissions based on search and material type
-        function filterSubmissions() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const materialFilter = document.getElementById('materialFilter').value;
+                <!-- Recent Activity -->
+                <div class="table-container">
+                    <h2 style="padding: 20px 25px; margin: 0; background: #f8f9fa; font-size: 1.3rem; color: #2e7d32;">Recent Submissions</h2>
+                    <div id="recent-listings"></div>
+                </div>
+            </div>
 
-            filteredSubmissions = allSubmissions.filter(submission => {
-                const matchesSearch = !searchTerm || 
-                    (submission.title || '').toLowerCase().includes(searchTerm) ||
-                    (submission.description || '').toLowerCase().includes(searchTerm) ||
-                    (submission.name || '').toLowerCase().includes(searchTerm) ||
-                    (submission.material_type || '').toLowerCase().includes(searchTerm) ||
-                    (submission.contact || '').toLowerCase().includes(searchTerm) ||
-                    (submission.location || '').toLowerCase().includes(searchTerm);
+            <!-- Listings Section -->
+            <div id="listings-section" class="section-content">
+                <div class="controls-bar">
+                    <div class="search-container">
+                        <input type="text" class="search-input" id="searchInput" placeholder="Search by material, seller name, location...">
+                        <span class="search-icon">🔍</span>
+                    </div>
+                    <select class="filter-select" id="materialFilter">
+                        <option value="">All Materials</option>
+                        <option value="metal">Metal</option>
+                        <option value="electronics">Electronics</option>
+                        <option value="paper">Paper</option>
+                        <option value="plastic">Plastic</option>
+                        <option value="automotive">Automotive</option>
+                        <option value="construction">Construction</option>
+                    </select>
+                    <button class="action-btn btn-primary" onclick="refreshListings()">
+                        🔄 Refresh
+                    </button>
+                </div>
 
-                const matchesMaterial = !materialFilter || 
-                    (submission.material_type || '').toLowerCase() === materialFilter.toLowerCase();
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Material & Description</th>
+                                <th>Quantity</th>
+                                <th>Seller Information</th>
+                                <th>Images</th>
+                                <th>Submitted</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="listingsTableBody">
+                            <tr>
+                                <td colspan="6" class="loading">
+                                    <div class="spinner"></div>
+                                    <div>Loading submissions...</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
-                return matchesSearch && matchesMaterial;
-            });
-
-            displaySubmissions();
-        }
-
-        // Format date for display
-        function formatDate(dateString) {
-            try {
-                const date = new Date(dateString);
-                const
+            <!-- Pricing Section -->
+            <div id="pricing-section" class="section-content">
+                <div class="price-management">
+                    <h2 style="color: #2e7d32; margin-bottom: 10px;">Manage Scrap Prices</h2>
+                    <p style="color: #666; margin-bottom: 25px;">Update current market prices. Changes will be reflected on the main website immediately.</p>
+                    
+                    <div id="priceAlert"></div>
+                    
+                    <div class="price-grid">
+                        <div class="price-category">
+                            <div class="category-header">
+                                <div class="category-icon">🔩</div>
+                                <div class="category-title">Metal Scrap</div>
+                            </div>
+                            <div class="price-item">
+                                <label class="price-label">Iron (₹/kg)</label>
+                                <input type="number" class="price-input" id="price-iron" min="0" step="1">
+                            </div>
+                            <div class="price-item">
+                                <label class="price-label">Copper (₹/kg)</label>
+                                <input type="number" class="price-input" id="price-copper" min="0" step="10">
+                            </div>
+                            <div class="price-item">
+                                <label class="price-label">Aluminum (₹/kg)</label>
+                                <input type="number" class="price-input" id="price-aluminum" min="0" step="5">
+                            </div>
+                        </div>
+                        
+                        <div class="price-category">
+                            <div class="category-header">
+                                <div class="category-icon">💻</div>
+                                <div class="category-title">Electronics</div>
+                            </div>
+                            <div class="price-item">
+                                <label class="price-label">Smartphones (₹/piece)</label>
+                                <input type="number" class="price-input" id="price-smartphones" min="0" step="50">
+                            </div>
+                            <div class="price-item">
+                                <label class="price-label">Laptops (₹/piece)</label>
+                                <input type="number" class="price-input" id="price-laptops" min="0" step="100">
+                            </div>
+                            <div class="price-item">
+                                <label class="price-label">Components (₹/kg)</label>
+                                <input type="number" class="price-input" id="price-components" min="0" step="10">
+                            </div>
+                        </div>
+                        
+                        <div class="price-category">
+                            <div class="category-header">
+                                <div class="category-icon">📄</div>
+                                <div class="category-title">Paper & Cardboard</div>
+                            </div>
+                            <div class="price-item">
+                                <label class="price-label">Newspapers (₹/kg)</label>
+                                <input type="number" class="price-input" id="price-newspapers" min="0" step="0.5">
+                            </div>
+                            <div class="price-item">
+                                <label class="price-label">Books (₹/kg)</label>
+                                <input type="number" class="price-input" id="price-books" min="0" step="0.5">
+                            </div>
+                            <div class="price-item">
+                                <label class="price-label">Cardboard (₹/kg)</label>
+                                <input type="number" class="price-input" id="price-cardboard" min="0" step="0.5">
+                            </div>
+                        </div>
+                        
+                        <div class="price-category">
+                            <div class="category-header">
+                                <div class="category-icon">♻️</div>
+                                <div class="category-title">Plastic</div>
+                            </div>
+                            <div class="price-item">
+                                <label class="price-label">PET Bottles (₹/kg)</label>
+                                <input type="number" class="price-input" id="price-pet" min="0" step="1">
+                            </div>
+                            <div class="price-item">
+                                <label class="price-label">Containers (₹/kg)</label>
+                                <input type="number" class="price-input" id="price-containers" min="0" step="1">
+                            </div>
+                            <div class="price-item">
+                                <label class="price-label">Mixed Plastic (₹/kg)</label>
+                                <input type="number" class="price-input" id="price-mixed-plastic" min="0" step="1">
+                            </div>
+                        </div>
+                        
+                        <div class="price-category">
+                            <div class="category-header">
+                                <div class="category-icon">🚗</div>
+                                <div class="category-title">Automotive</div>
+                            </div>
+                            <div class="price-item">
+                                <label class="price-label">Car Batteries (₹/piece)</label>
+                                <input type="number" class="price-input" id="price-batteries" min="0" step="10">
+                            </div>
+                            <div class="price-item">
+                                <label class="price-label">Tires (₹/piece)</label>
+                                <input type="number" class="price-input" id="price-tires" min="0" step="10">
+                            </div>
+                            <div class="price-item">
+                                <label class="price-label">Parts (₹/kg)</label>
+                                <input type="number" class="price-input" id="price-auto-parts" min="0" step="5">
+                            </div>
+                        </div>
+                        
+                        <div class="price-category">
+                            <div class="category-header">
+                                <div class="category-icon">🏗️</div>
+                                <div class="category-title">Construction</div>
+                            </div>
+                            <div class="price-item">
+                                <label class="price-label">Steel Rods (₹/kg)</label>
+                                <input type="number" class="price-input" id="price-steel" min="0" step="1">
+                            </div>
+                            <div class="price-item">
+                                <label class="price-label">Concrete (₹/kg)</label>
+                                <input type="number" class="price-input" id="price-concrete" min="0" step="0.5">
+                            </div>
+                            <div class="price

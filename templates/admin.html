@@ -110,7 +110,6 @@
 
         .stat-icon {
             font-size: 2.5rem;
-            color: #4caf50;
         }
 
         .stat-value {
@@ -125,32 +124,6 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             font-weight: 600;
-        }
-
-        .section-tabs {
-            display: flex;
-            margin-bottom: 30px;
-            background: #f5f5f5;
-            border-radius: 10px;
-            padding: 5px;
-        }
-
-        .section-tab {
-            flex: 1;
-            padding: 15px 20px;
-            background: transparent;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            color: #666;
-        }
-
-        .section-tab.active {
-            background: #4caf50;
-            color: white;
-            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
         }
 
         .section-content {
@@ -441,7 +414,59 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
-        /* Price Management Styles */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #4caf50;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .alert {
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 30px;
+            color: #666;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #4caf50;
+        }
+
         .price-management {
             background: white;
             border-radius: 15px;
@@ -523,7 +548,6 @@
             justify-content: center;
         }
 
-        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -532,92 +556,32 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.9);
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
             backdrop-filter: blur(5px);
         }
 
         .modal-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            max-width: 90%;
-            max-height: 90%;
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 30px;
+            border: none;
+            width: 90%;
+            max-width: 800px;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
 
-        .modal img {
-            max-width: 100%;
-            max-height: 100%;
-            border-radius: 10px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 20px;
-            right: 35px;
-            color: white;
-            font-size: 40px;
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
             font-weight: bold;
             cursor: pointer;
-            transition: color 0.3s ease;
         }
 
-        .modal-close:hover {
-            color: #4caf50;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 60px 30px;
-            color: #666;
-        }
-
-        .empty-state h3 {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-            color: #4caf50;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #666;
-        }
-
-        .spinner {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #4caf50;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 15px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .alert {
-            padding: 15px 20px;
-            margin: 20px 0;
-            border-radius: 8px;
-            font-weight: 600;
-        }
-
-        .alert-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .alert-error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+        .close:hover {
+            color: #000;
         }
 
         @media (max-width: 768px) {
@@ -700,7 +664,7 @@
                     <div class="stat-card">
                         <div class="stat-header">
                             <div class="stat-icon">📊</div>
-                            <div class="stat-value" id="totalSubmissions">0</div>
+                            <div class="stat-value" id="totalSubmissions">Loading...</div>
                         </div>
                         <div class="stat-label">Total Submissions</div>
                     </div>
@@ -708,7 +672,7 @@
                     <div class="stat-card">
                         <div class="stat-header">
                             <div class="stat-icon">🏭</div>
-                            <div class="stat-value" id="materialTypes">0</div>
+                            <div class="stat-value" id="materialTypes">6</div>
                         </div>
                         <div class="stat-label">Material Types</div>
                     </div>
@@ -716,7 +680,7 @@
                     <div class="stat-card">
                         <div class="stat-header">
                             <div class="stat-icon">📸</div>
-                            <div class="stat-value" id="totalImages">0</div>
+                            <div class="stat-value" id="totalImages">Loading...</div>
                         </div>
                         <div class="stat-label">Total Images</div>
                     </div>
@@ -724,7 +688,7 @@
                     <div class="stat-card">
                         <div class="stat-header">
                             <div class="stat-icon">📅</div>
-                            <div class="stat-value" id="todaySubmissions">0</div>
+                            <div class="stat-value" id="todaySubmissions">Loading...</div>
                         </div>
                         <div class="stat-label">Today's Submissions</div>
                     </div>
@@ -732,7 +696,7 @@
                     <div class="stat-card">
                         <div class="stat-header">
                             <div class="stat-icon">⚖️</div>
-                            <div class="stat-value" id="avgQuantity">0</div>
+                            <div class="stat-value" id="avgQuantity">Loading...</div>
                         </div>
                         <div class="stat-label">Avg. Photos per Listing</div>
                     </div>
@@ -741,7 +705,12 @@
                 <!-- Recent Activity -->
                 <div class="table-container">
                     <h2 style="padding: 20px 25px; margin: 0; background: #f8f9fa; font-size: 1.3rem; color: #2e7d32;">Recent Submissions</h2>
-                    <div id="recent-listings"></div>
+                    <div id="recent-listings">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            <div>Loading recent submissions...</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -806,15 +775,15 @@
                             </div>
                             <div class="price-item">
                                 <label class="price-label">Iron (₹/kg)</label>
-                                <input type="number" class="price-input" id="price-iron" min="0" step="1">
+                                <input type="number" class="price-input" id="price-iron" min="0" step="1" value="25">
                             </div>
                             <div class="price-item">
                                 <label class="price-label">Copper (₹/kg)</label>
-                                <input type="number" class="price-input" id="price-copper" min="0" step="10">
+                                <input type="number" class="price-input" id="price-copper" min="0" step="10" value="680">
                             </div>
                             <div class="price-item">
                                 <label class="price-label">Aluminum (₹/kg)</label>
-                                <input type="number" class="price-input" id="price-aluminum" min="0" step="5">
+                                <input type="number" class="price-input" id="price-aluminum" min="0" step="5" value="140">
                             </div>
                         </div>
                         
@@ -825,15 +794,15 @@
                             </div>
                             <div class="price-item">
                                 <label class="price-label">Smartphones (₹/piece)</label>
-                                <input type="number" class="price-input" id="price-smartphones" min="0" step="50">
+                                <input type="number" class="price-input" id="price-smartphones" min="0" step="50" value="500">
                             </div>
                             <div class="price-item">
                                 <label class="price-label">Laptops (₹/piece)</label>
-                                <input type="number" class="price-input" id="price-laptops" min="0" step="100">
+                                <input type="number" class="price-input" id="price-laptops" min="0" step="100" value="2000">
                             </div>
                             <div class="price-item">
                                 <label class="price-label">Components (₹/kg)</label>
-                                <input type="number" class="price-input" id="price-components" min="0" step="10">
+                                <input type="number" class="price-input" id="price-components" min="0" step="10" value="300">
                             </div>
                         </div>
                         
@@ -844,15 +813,15 @@
                             </div>
                             <div class="price-item">
                                 <label class="price-label">Newspapers (₹/kg)</label>
-                                <input type="number" class="price-input" id="price-newspapers" min="0" step="0.5">
+                                <input type="number" class="price-input" id="price-newspapers" min="0" step="0.5" value="15">
                             </div>
                             <div class="price-item">
                                 <label class="price-label">Books (₹/kg)</label>
-                                <input type="number" class="price-input" id="price-books" min="0" step="0.5">
+                                <input type="number" class="price-input" id="price-books" min="0" step="0.5" value="12">
                             </div>
                             <div class="price-item">
                                 <label class="price-label">Cardboard (₹/kg)</label>
-                                <input type="number" class="price-input" id="price-cardboard" min="0" step="0.5">
+                                <input type="number" class="price-input" id="price-cardboard" min="0" step="0.5" value="8">
                             </div>
                         </div>
                         
@@ -863,15 +832,15 @@
                             </div>
                             <div class="price-item">
                                 <label class="price-label">PET Bottles (₹/kg)</label>
-                                <input type="number" class="price-input" id="price-pet" min="0" step="1">
+                                <input type="number" class="price-input" id="price-pet" min="0" step="1" value="18">
                             </div>
                             <div class="price-item">
                                 <label class="price-label">Containers (₹/kg)</label>
-                                <input type="number" class="price-input" id="price-containers" min="0" step="1">
+                                <input type="number" class="price-input" id="price-containers" min="0" step="1" value="22">
                             </div>
                             <div class="price-item">
                                 <label class="price-label">Mixed Plastic (₹/kg)</label>
-                                <input type="number" class="price-input" id="price-mixed-plastic" min="0" step="1">
+                                <input type="number" class="price-input" id="price-mixed-plastic" min="0" step="1" value="10">
                             </div>
                         </div>
                         
@@ -882,15 +851,15 @@
                             </div>
                             <div class="price-item">
                                 <label class="price-label">Car Batteries (₹/piece)</label>
-                                <input type="number" class="price-input" id="price-batteries" min="0" step="10">
+                                <input type="number" class="price-input" id="price-batteries" min="0" step="10" value="800">
                             </div>
                             <div class="price-item">
                                 <label class="price-label">Tires (₹/piece)</label>
-                                <input type="number" class="price-input" id="price-tires" min="0" step="10">
+                                <input type="number" class="price-input" id="price-tires" min="0" step="10" value="200">
                             </div>
                             <div class="price-item">
                                 <label class="price-label">Parts (₹/kg)</label>
-                                <input type="number" class="price-input" id="price-auto-parts" min="0" step="5">
+                                <input type="number" class="price-input" id="price-auto-parts" min="0" step="5" value="35">
                             </div>
                         </div>
                         
@@ -901,10 +870,576 @@
                             </div>
                             <div class="price-item">
                                 <label class="price-label">Steel Rods (₹/kg)</label>
-                                <input type="number" class="price-input" id="price-steel" min="0" step="1">
+                                <input type="number" class="price-input" id="price-steel" min="0" step="1" value="45">
                             </div>
                             <div class="price-item">
                                 <label class="price-label">Concrete (₹/kg)</label>
-                                <input type="number" class="price-input" id="price-concrete" min="0" step="0.5">
+                                <input type="number" class="price-input" id="price-concrete" min="0" step="0.5" value="5">
                             </div>
-                            <div class="price
+                            <div class="price-item">
+                                <label class="price-label">Tiles (₹/kg)</label>
+                                <input type="number" class="price-input" id="price-tiles" min="0" step="1" value="12">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="price-actions">
+                        <button class="action-btn btn-secondary" onclick="loadPrices()">
+                            🔄 Reload Prices
+                        </button>
+                        <button class="action-btn btn-secondary" onclick="initializeDefaultPrices()">
+                            🚀 Initialize Defaults
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Image Modal -->
+    <div id="imageModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeImageModal()">&times;</span>
+            <img id="modalImage" style="width: 100%; max-height: 70vh; object-fit: contain; border-radius: 10px;">
+            <div style="text-align: center; margin-top: 15px;">
+                <button class="action-btn btn-secondary" onclick="closeImageModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let allSubmissions = [];
+        let filteredSubmissions = [];
+        let currentPrices = {};
+
+        // Mock data generator
+        function generateMockSubmissions(count) {
+            const materials = ['metal', 'electronics', 'paper', 'plastic', 'automotive', 'construction'];
+            const names = ['Rajesh Kumar', 'Priya Sharma', 'Mohammed Ali', 'Sunita Devi', 'Arjun Patel', 'Kavya Reddy', 'Amit Singh', 'Neha Gupta'];
+            const locations = ['Mumbai', 'Delhi', 'Bangalore', 'Chennai', 'Kolkata', 'Pune', 'Hyderabad', 'Ahmedabad'];
+            const titles = {
+                metal: ['Copper Wire Scrap', 'Iron Rods Bundle', 'Aluminum Sheets', 'Steel Pipes', 'Brass Fittings', 'Metal Containers'],
+                electronics: ['Old Smartphones', 'Laptop Components', 'TV Parts', 'Mobile Chargers', 'Circuit Boards', 'Computer Cables'],
+                paper: ['Newspaper Bundle', 'Old Books', 'Office Papers', 'Cardboard Boxes', 'Magazine Stack', 'Paper Cartons'],
+                plastic: ['PET Bottles', 'Plastic Containers', 'Polythene Bags', 'Plastic Chairs', 'Food Containers', 'Bottle Caps'],
+                automotive: ['Car Battery', 'Old Tires', 'Engine Parts', 'Car Bumper', 'Brake Pads', 'Oil Filters'],
+                construction: ['Steel Rods', 'Concrete Blocks', 'Ceramic Tiles', 'Iron Bars', 'Building Materials', 'Wire Mesh']
+            };
+            
+            return Array.from({length: count}, (_, i) => {
+                const material = materials[Math.floor(Math.random() * materials.length)];
+                const titleOptions = titles[material];
+                const photosCount = Math.floor(Math.random() * 4) + 1;
+                
+                return {
+                    id: `sub_${Date.now()}_${i}`,
+                    material_type: material,
+                    title: titleOptions[Math.floor(Math.random() * titleOptions.length)],
+                    description: `High quality ${material} scrap available for pickup. Good condition and reasonable pricing. Contact for bulk deals.`,
+                    name: names[Math.floor(Math.random() * names.length)],
+                    phone: `+91 ${Math.floor(Math.random() * 9000000000) + 1000000000}`,
+                    email: Math.random() > 0.3 ? `user${i}@example.com` : null,
+                    location: locations[Math.floor(Math.random() * locations.length)],
+                    quantity: `${Math.floor(Math.random() * 100) + 10} kg`,
+                    photos: Array.from({length: photosCount}, (_, j) => 
+                        `https://picsum.photos/400/300?random=${i}-${j}&sig=${material}`
+                    ),
+                    created_at: new Date(Date.now() - Math.floor(Math.random() * 30 * 24 * 60 * 60 * 1000)).toISOString()
+                };
+            });
+        }
+
+        // Initialize admin panel
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Admin panel initializing...');
+            
+            // Generate initial data
+            allSubmissions = generateMockSubmissions(35);
+            filteredSubmissions = [...allSubmissions];
+            
+            // Load all sections
+            loadDashboardStats();
+            loadListings();
+            loadPrices();
+            setupSearchAndFilter();
+            
+            console.log('Admin panel initialized with', allSubmissions.length, 'submissions');
+        });
+
+        // ========== SECTION NAVIGATION ==========
+        
+        function showSection(sectionName) {
+            // Hide all sections
+            document.querySelectorAll('.section-content').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all nav buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected section
+            const targetSection = document.getElementById(`${sectionName}-section`);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+            
+            // Add active class to clicked nav button
+            event.target.classList.add('active');
+            
+            // Load section-specific data if needed
+            if (sectionName === 'listings') {
+                renderListingsTable();
+            } else if (sectionName === 'pricing') {
+                loadPrices();
+            } else if (sectionName === 'dashboard') {
+                loadDashboardStats();
+            }
+        }
+
+        // ========== DASHBOARD FUNCTIONS ==========
+        
+        function loadDashboardStats() {
+            try {
+                // Calculate real stats from data
+                const totalImages = allSubmissions.reduce((sum, sub) => sum + (sub.photos ? sub.photos.length : 0), 0);
+                const today = new Date().toDateString();
+                const todaySubmissions = allSubmissions.filter(sub => 
+                    new Date(sub.created_at).toDateString() === today
+                ).length;
+                const avgPhotos = allSubmissions.length > 0 ? 
+                    (totalImages / allSubmissions.length).toFixed(1) : '0';
+                const materialTypes = new Set(allSubmissions.map(sub => sub.material_type)).size;
+                
+                // Update dashboard statistics
+                document.getElementById('totalSubmissions').textContent = allSubmissions.length;
+                document.getElementById('materialTypes').textContent = materialTypes;
+                document.getElementById('totalImages').textContent = totalImages;
+                document.getElementById('todaySubmissions').textContent = todaySubmissions;
+                document.getElementById('avgQuantity').textContent = avgPhotos;
+                
+                // Load recent submissions (last 5)
+                const recentSubmissions = [...allSubmissions]
+                    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+                    .slice(0, 5);
+                    
+                loadRecentSubmissions(recentSubmissions);
+                
+            } catch (error) {
+                console.error('Error loading dashboard stats:', error);
+            }
+        }
+
+        function loadRecentSubmissions(recentSubmissions) {
+            const recentContainer = document.getElementById('recent-listings');
+            
+            if (!recentSubmissions || recentSubmissions.length === 0) {
+                recentContainer.innerHTML = `
+                    <div class="empty-state">
+                        <h3>No Recent Submissions</h3>
+                        <p>No scrap submissions found yet.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const tableHTML = `
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Material & Description</th>
+                            <th>Seller</th>
+                            <th>Location</th>
+                            <th>Photos</th>
+                            <th>Submitted</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${recentSubmissions.map(submission => `
+                            <tr>
+                                <td>
+                                    <div class="material-badge badge-${submission.material_type}">
+                                        ${submission.material_type}
+                                    </div>
+                                    <div class="listing-title">${submission.title}</div>
+                                    <div class="listing-description">${submission.description || 'No description provided'}</div>
+                                </td>
+                                <td>
+                                    <div class="seller-name">${submission.name}</div>
+                                </td>
+                                <td>
+                                    <span class="location-badge">${submission.location}</span>
+                                </td>
+                                <td>
+                                    ${submission.photos && submission.photos.length > 0 
+                                        ? `<span style="color: #4caf50; font-weight: 600;">${submission.photos.length} photos</span>`
+                                        : '<span style="color: #999;">No photos</span>'
+                                    }
+                                </td>
+                                <td>
+                                    <div class="timestamp">
+                                        📅 ${formatDate(submission.created_at)}
+                                    </div>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            
+            recentContainer.innerHTML = tableHTML;
+        }
+
+        // ========== LISTINGS FUNCTIONS ==========
+        
+        function loadListings() {
+            // Data is already loaded, just render
+            renderListingsTable();
+        }
+
+        function renderListingsTable() {
+            const tableBody = document.getElementById('listingsTableBody');
+            
+            if (filteredSubmissions.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="empty-state">
+                            <h3>No Listings Found</h3>
+                            <p>No scrap submissions match your current filters.</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tableBody.innerHTML = filteredSubmissions.map(submission => `
+                <tr>
+                    <td>
+                        <div class="material-badge badge-${submission.material_type}">
+                            ${submission.material_type}
+                        </div>
+                        <div class="listing-title">${submission.title}</div>
+                        <div class="listing-description">${submission.description || 'No description provided'}</div>
+                    </td>
+                    <td>
+                        <div class="quantity-display">
+                            ${submission.quantity || 'Not specified'}
+                        </div>
+                    </td>
+                    <td>
+                        <div class="seller-info">
+                            <div class="seller-name">${submission.name}</div>
+                            ${submission.phone ? `
+                                <div class="contact-item">
+                                    <span class="contact-icon">📞</span>
+                                    ${submission.phone}
+                                </div>
+                            ` : ''}
+                            ${submission.email ? `
+                                <div class="contact-item">
+                                    <span class="contact-icon">📧</span>
+                                    ${submission.email}
+                                </div>
+                            ` : ''}
+                            <div class="location-badge">${submission.location}</div>
+                        </div>
+                    </td>
+                    <td>
+                        ${renderImageGallery(submission.photos)}
+                    </td>
+                    <td>
+                        <div class="timestamp">
+                            📅 ${formatDate(submission.created_at)}
+                        </div>
+                    </td>
+                    <td>
+                        <div class="row-actions">
+                            <button class="row-btn btn-view" onclick="viewListing('${submission.id}')">
+                                👁️ View
+                            </button>
+                            ${submission.phone ? `
+                                <button class="row-btn btn-contact" onclick="contactSeller('${submission.phone}')">
+                                    📞 Call
+                                </button>
+                            ` : ''}
+                            <button class="row-btn btn-delete" onclick="deleteListing('${submission.id}')">
+                                🗑️ Delete
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderImageGallery(photos) {
+            if (!photos || photos.length === 0) {
+                return '<div class="no-images">No images</div>';
+            }
+
+            return `
+                <div class="image-gallery">
+                    ${photos.slice(0, 4).map(photo => `
+                        <img src="${photo}" 
+                             class="image-thumb" 
+                             onclick="showImageModal('${photo}')"
+                             alt="Scrap photo"
+                             onerror="this.src='https://via.placeholder.com/80x80/4caf50/ffffff?text=No+Image'">
+                    `).join('')}
+                    ${photos.length > 4 ? `<div style="display: flex; align-items: center; color: #666; font-size: 0.8rem;">+${photos.length - 4} more</div>` : ''}
+                </div>
+            `;
+        }
+
+        function refreshListings() {
+            showAlert('Refreshing listings...', 'success');
+            // Generate new data
+            allSubmissions = generateMockSubmissions(35 + Math.floor(Math.random() * 10));
+            filterListings();
+            loadDashboardStats();
+        }
+
+        // ========== SEARCH AND FILTER ==========
+        
+        function setupSearchAndFilter() {
+            const searchInput = document.getElementById('searchInput');
+            const materialFilter = document.getElementById('materialFilter');
+
+            if (searchInput) searchInput.addEventListener('input', filterListings);
+            if (materialFilter) materialFilter.addEventListener('change', filterListings);
+        }
+
+        function filterListings() {
+            const searchInput = document.getElementById('searchInput');
+            const materialFilter = document.getElementById('materialFilter');
+            
+            const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+            const materialType = materialFilter ? materialFilter.value : '';
+
+            filteredSubmissions = allSubmissions.filter(submission => {
+                const matchesSearch = !searchTerm || 
+                    submission.title.toLowerCase().includes(searchTerm) ||
+                    submission.name.toLowerCase().includes(searchTerm) ||
+                    submission.location.toLowerCase().includes(searchTerm) ||
+                    (submission.description && submission.description.toLowerCase().includes(searchTerm));
+
+                const matchesMaterial = !materialType || submission.material_type === materialType;
+
+                return matchesSearch && matchesMaterial;
+            });
+
+            renderListingsTable();
+        }
+
+        // ========== PRICING FUNCTIONS ==========
+        
+        function loadPrices() {
+            try {
+                const savedPrices = localStorage.getItem('scrapy5_prices');
+                if (savedPrices) {
+                    currentPrices = JSON.parse(savedPrices);
+                    updatePriceInputs();
+                } else {
+                    initializeDefaultPrices();
+                }
+            } catch (error) {
+                console.error('Error loading prices:', error);
+                initializeDefaultPrices();
+            }
+        }
+
+        function updatePriceInputs() {
+            Object.keys(currentPrices).forEach(key => {
+                const input = document.getElementById(`price-${key}`);
+                if (input) {
+                    input.value = currentPrices[key];
+                }
+            });
+        }
+
+        function savePrices() {
+            try {
+                const priceInputs = document.querySelectorAll('.price-input');
+                const newPrices = {};
+                
+                priceInputs.forEach(input => {
+                    const key = input.id.replace('price-', '');
+                    newPrices[key] = parseFloat(input.value) || 0;
+                });
+                
+                localStorage.setItem('scrapy5_prices', JSON.stringify(newPrices));
+                currentPrices = newPrices;
+                
+                showAlert('Prices saved successfully! ✅', 'success');
+                
+            } catch (error) {
+                console.error('Error saving prices:', error);
+                showAlert('Failed to save prices ❌', 'error');
+            }
+        }
+
+        function initializeDefaultPrices() {
+            const defaultPrices = {
+                'iron': 25,
+                'copper': 680,
+                'aluminum': 140,
+                'smartphones': 500,
+                'laptops': 2000,
+                'components': 300,
+                'newspapers': 15,
+                'books': 12,
+                'cardboard': 8,
+                'pet': 18,
+                'containers': 22,
+                'mixed-plastic': 10,
+                'batteries': 800,
+                'tires': 200,
+                'auto-parts': 35,
+                'steel': 45,
+                'concrete': 5,
+                'tiles': 12
+            };
+            
+            currentPrices = defaultPrices;
+            updatePriceInputs();
+            localStorage.setItem('scrapy5_prices', JSON.stringify(defaultPrices));
+            
+            showAlert('Default prices initialized! 🚀', 'success');
+        }
+
+        // ========== UTILITY FUNCTIONS ==========
+        
+        function showAlert(message, type = 'success') {
+            let alertDiv = document.getElementById('priceAlert');
+            if (!alertDiv) {
+                alertDiv = document.createElement('div');
+                alertDiv.id = 'priceAlert';
+                const priceManagement = document.querySelector('.price-management');
+                if (priceManagement) {
+                    const priceGrid = document.querySelector('.price-grid');
+                    priceManagement.insertBefore(alertDiv, priceGrid);
+                } else {
+                    document.body.appendChild(alertDiv);
+                }
+            }
+            
+            alertDiv.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+            
+            setTimeout(() => {
+                alertDiv.innerHTML = '';
+            }, 5000);
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffTime = Math.abs(now - date);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            if (diffDays === 1) {
+                return 'Today ' + date.toLocaleTimeString('en-IN', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            } else if (diffDays === 2) {
+                return 'Yesterday';
+            } else if (diffDays <= 7) {
+                return `${diffDays - 1} days ago`;
+            } else {
+                return date.toLocaleDateString('en-IN') + ' ' + date.toLocaleTimeString('en-IN', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            }
+        }
+
+        // ========== ACTION FUNCTIONS ==========
+        
+        function viewListing(id) {
+            const listing = allSubmissions.find(sub => sub.id === id);
+            if (listing) {
+                const details = `
+📋 LISTING DETAILS
+
+🏷️ Title: ${listing.title}
+🔧 Material: ${listing.material_type.toUpperCase()}
+⚖️ Quantity: ${listing.quantity}
+
+👤 Seller: ${listing.name}
+📞 Phone: ${listing.phone}
+📧 Email: ${listing.email || 'Not provided'}
+📍 Location: ${listing.location}
+
+📝 Description: ${listing.description}
+📸 Photos: ${listing.photos ? listing.photos.length : 0}
+📅 Submitted: ${formatDate(listing.created_at)}
+                `;
+                alert(details);
+            }
+        }
+
+        function contactSeller(phone) {
+            if (confirm(`📞 Call ${phone}?\n\nThis will open your phone app to make the call.`)) {
+                window.open(`tel:${phone}`, '_self');
+            }
+        }
+
+        function deleteListing(id) {
+            if (confirm('⚠️ Are you sure you want to delete this listing?\n\nThis action cannot be undone.')) {
+                allSubmissions = allSubmissions.filter(sub => sub.id !== id);
+                filterListings();
+                loadDashboardStats();
+                showAlert('Listing deleted successfully! 🗑️', 'success');
+            }
+        }
+
+        function showImageModal(imageSrc) {
+            const modal = document.getElementById('imageModal');
+            const modalImage = document.getElementById('modalImage');
+            
+            if (modal && modalImage) {
+                modalImage.src = imageSrc;
+                modal.style.display = 'block';
+            }
+        }
+
+        function closeImageModal() {
+            const modal = document.getElementById('imageModal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            const modal = document.getElementById('imageModal');
+            if (event.target === modal) {
+                closeImageModal();
+            }
+        }
+
+        // Auto-refresh data every 5 minutes
+        setInterval(() => {
+            console.log('Auto-refreshing data...');
+            // In a real app, this would fetch from the server
+            // For now, just update timestamps to show activity
+            const now = new Date().toISOString();
+            if (Math.random() > 0.8) { // 20% chance to add new submission
+                const newSubmission = generateMockSubmissions(1)[0];
+                newSubmission.created_at = now;
+                allSubmissions.unshift(newSubmission);
+                loadDashboardStats();
+                if (document.getElementById('dashboard-section').classList.contains('active')) {
+                    loadDashboardStats();
+                }
+            }
+        }, 300000); // 5 minutes
+
+        console.log('Admin panel script loaded successfully ✅');
+    </script>
+</body>
+</html>-primary" onclick="savePrices()">
+                            💾 Save All Prices
+                        </button>
+                        <button class="action-btn btn

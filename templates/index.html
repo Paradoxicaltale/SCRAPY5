@@ -143,47 +143,49 @@
             color: white;
         }
 
-        /* Price Management Styles */
-        .price-management {
-            background: #fff3cd;
-            border: 2px solid #ffc107;
-            border-radius: 10px;
-            padding: 1rem;
-            margin: 1rem 0;
-            display: none;
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
         }
 
-        .price-management.show {
-            display: block;
-        }
-
-        .price-edit-form {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .price-group {
-            background: white;
-            padding: 1rem;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-        }
-
-        .price-group h4 {
-            color: #667eea;
-            margin-bottom: 0.5rem;
-            font-size: 1rem;
-        }
-
-        .price-input {
-            width: 100%;
-            padding: 0.5rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            margin: 0.25rem 0;
+        /* Enhanced location status styles */
+        #locationStatus {
             font-size: 0.9rem;
+            margin-top: 0.5rem;
+            padding: 0.8rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        #locationStatus:empty {
+            padding: 0;
+            margin: 0;
+        }
+
+        .location-loading {
+            background-color: #e3f2fd;
+            color: #1565c0;
+            border-left-color: #2196f3;
+        }
+
+        .location-success {
+            background-color: #e8f5e8;
+            color: #2e7d32;
+            border-left-color: #4caf50;
+        }
+
+        .location-error {
+            background-color: #ffebee;
+            color: #c62828;
+            border-left-color: #f44336;
+        }
+
+        .location-warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border-left-color: #ffc107;
         }
 
         .categories {
@@ -424,6 +426,54 @@
             text-align: center;
         }
 
+        .steps-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .step-card {
+            background: #f7fafc;
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .step-card:hover {
+            border-color: #667eea;
+            transform: translateY(-5px);
+        }
+
+        .step-number {
+            background: #667eea;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin: 0 auto 1rem;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .pricing-card {
+            background: #f7fafc;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+
         @media (max-width: 768px) {
             .nav-links {
                 display: none;
@@ -449,6 +499,11 @@
             .capture-controls {
                 flex-direction: column;
                 align-items: center;
+            }
+
+            .footer-links {
+                flex-direction: column;
+                gap: 1rem;
             }
         }
     </style>
@@ -547,13 +602,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Scrap Description</label>
+                        <label class="form-label">Scrap Name</label>
                         <input type="text" class="form-input" id="listingTitle" name="listingTitle" placeholder="e.g., Copper Wire, Old Smartphones, Cardboard Boxes" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Detailed Description</label>
-                        <textarea class="form-input form-textarea" id="listingDescription" name="listingDescription" placeholder="Describe your scrap material - condition, quantity, any special notes..." required></textarea>
                     </div>
 
                     <div class="form-group">
@@ -568,7 +618,14 @@
 
                     <div class="form-group">
                         <label class="form-label">Location in Mumbai</label>
-                        <input type="text" class="form-input" id="listingLocation" name="listingLocation" placeholder="e.g., 101 Shanti Apartments, LBS marg, Mulund West" required>
+                        <div style="display: flex; gap: 0.5rem; align-items: flex-start; flex-wrap: wrap;">
+                            <input type="text" class="form-input" id="listingLocation" name="listingLocation" placeholder="e.g., 101 Shanti Apartments, LBS marg, Mulund West, Mumbai - 400080" required style="flex: 1; min-width: 250px;">
+                            <button type="button" class="btn btn-secondary" onclick="getCurrentLocation()" id="locationBtn" style="white-space: nowrap;">📍 Get Location</button>
+                        </div>
+                        <div id="locationStatus"></div>
+                        <p style="font-size: 0.85rem; color: #666; margin-top: 0.5rem;">
+                            💡 Click "Get Location" for automatic address detection or enter your address manually
+                        </p>
                     </div>
 
                     <div class="form-group">
@@ -618,198 +675,230 @@
                 <h2>Current Scrap Prices in Mumbai</h2>
                 <p style="text-align: center; margin-bottom: 2rem; color: #666;">Our competitive rates (prices may vary based on quality and quantity)</p>
                 
-                <!-- Price Management Section -->
-                <div style="text-align: center; margin-bottom: 1rem;">
-                    <button type="button" class="btn btn-secondary" onclick="togglePriceManagement()">⚙️ Update Prices</button>
-                </div>
-                
-                <div id="priceManagement" class="price-management">
-                    <h3>Price Management Panel</h3>
-                    <p>Update current scrap prices. Changes will be reflected immediately.</p>
-                    
-                    <div class="price-edit-form">
-                        <div class="price-group">
-                            <h4>🔩 Metal Scrap</h4>
-                            <label>Iron (₹/kg):</label>
-                            <input type="number" class="price-input" id="price-iron" value="25" min="0" step="1">
-                            <label>Copper (₹/kg):</label>
-                            <input type="number" class="price-input" id="price-copper" value="500" min="0" step="10">
-                            <label>Aluminum (₹/kg):</label>
-                            <input type="number" class="price-input" id="price-aluminum" value="120" min="0" step="5">
-                        </div>
-                        
-                        <div class="price-group">
-                            <h4>💻 Electronics</h4>
-                            <label>Smartphones (₹/piece):</label>
-                            <input type="number" class="price-input" id="price-smartphones" value="200" min="0" step="50">
-                            <label>Laptops (₹/piece):</label>
-                            <input type="number" class="price-input" id="price-laptops" value="500" min="0" step="100">
-                            <label>Components (₹/kg):</label>
-                            <input type="number" class="price-input" id="price-components" value="50" min="0" step="10">
-                        </div>
-                        
-                        <div class="price-group">
-                            <h4>📄 Paper & Cardboard</h4>
-                            <label>Newspapers (₹/kg):</label>
-                            <input type="number" class="price-input" id="price-newspapers" value="8" min="0" step="0.5">
-                            <label>Books (₹/kg):</label>
-                            <input type="number" class="price-input" id="price-books" value="6" min="0" step="0.5">
-                            <label>Cardboard (₹/kg):</label>
-                            <input type="number" class="price-input" id="price-cardboard" value="5" min="0" step="0.5">
-                        </div>
-                        
-                        <div class="price-group">
-                            <h4>♻️ Plastic</h4>
-                            <label>PET Bottles (₹/kg):</label>
-                            <input type="number" class="price-input" id="price-pet" value="15" min="0" step="1">
-                            <label>Containers (₹/kg):</label>
-                            <input type="number" class="price-input" id="price-containers" value="10" min="0" step="1">
-                            <label>Mixed Plastic (₹/kg):</label>
-                            <input type="number" class="price-input" id="price-mixed-plastic" value="5" min="0" step="1">
-                        </div>
-                        
-                        <div class="price-group">
-                            <h4>🚗 Automotive</h4>
-                            <label>Car Batteries (₹/piece):</label>
-                            <input type="number" class="price-input" id="price-batteries" value="150" min="0" step="10">
-                            <label>Tires (₹/piece):</label>
-                            <input type="number" class="price-input" id="price-tires" value="50" min="0" step="10">
-                            <label>Parts (₹/kg):</label>
-                            <input type="number" class="price-input" id="price-auto-parts" value="20" min="0" step="5">
-                        </div>
-                        
-                        <div class="price-group">
-                            <h4>🏗️ Construction</h4>
-                            <label>Steel Rods (₹/kg):</label>
-                            <input type="number" class="price-input" id="price-steel" value="35" min="0" step="1">
-                            <label>Concrete (₹/kg):</label>
-                            <input type="number" class="price-input" id="price-concrete" value="2" min="0" step="0.5">
-                            <label>Tiles (₹/kg):</label>
-                            <input type="number" class="price-input" id="price-tiles" value="3" min="0" step="0.5">
-                        </div>
-                    </div>
-                    
-                    <div style="text-align: center; margin-top: 1rem;">
-                        <button type="button" class="btn btn-primary" onclick="updatePrices()">💾 Save All Prices</button>
-                        <button type="button" class="btn btn-secondary" onclick="resetPrices()">🔄 Reset to Default</button>
-                    </div>
-                </div>
-                
-                <div class="pricing-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin: 2rem 0;">
-                    <div class="pricing-card" style="background: #f7fafc; padding: 1.5rem; border-radius: 10px; text-align: center;">
+                <div class="pricing-grid">
+                    <div class="pricing-card">
                         <div style="font-size: 2rem; margin-bottom: 1rem;">🔩</div>
                         <h3>Metal Scrap</h3>
                         <div style="margin: 1rem 0;">
-                            <div style="margin: 0.5rem 0;" id="display-iron">Iron: ₹25-30/kg</div>
-                            <div style="margin: 0.5rem 0;" id="display-copper">Copper: ₹500-600/kg</div>
-                            <div style="margin: 0.5rem 0;" id="display-aluminum">Aluminum: ₹120-150/kg</div>
+                            <div style="margin: 0.5rem 0;">Iron: ₹25-30/kg</div>
+                            <div style="margin: 0.5rem 0;">Copper: ₹500-600/kg</div>
+                            <div style="margin: 0.5rem 0;">Aluminum: ₹120-150/kg</div>
                         </div>
                     </div>
                     
-                    <div class="pricing-card" style="background: #f7fafc; padding: 1.5rem; border-radius: 10px; text-align: center;">
+                    <div class="pricing-card">
                         <div style="font-size: 2rem; margin-bottom: 1rem;">💻</div>
                         <h3>Electronics</h3>
                         <div style="margin: 1rem 0;">
-                            <div style="margin: 0.5rem 0;" id="display-smartphones">Smartphones: ₹200-2000/piece</div>
-                            <div style="margin: 0.5rem 0;" id="display-laptops">Laptops: ₹500-5000/piece</div>
-                            <div style="margin: 0.5rem 0;" id="display-components">Components: ₹50-500/kg</div>
+                            <div style="margin: 0.5rem 0;">Smartphones: ₹200-2000/piece</div>
+                            <div style="margin: 0.5rem 0;">Laptops: ₹500-5000/piece</div>
+                            <div style="margin: 0.5rem 0;">Components: ₹50-500/kg</div>
                         </div>
                     </div>
                     
-                    <div class="pricing-card" style="background: #f7fafc; padding: 1.5rem; border-radius: 10px; text-align: center;">
+                    <div class="pricing-card">
                         <div style="font-size: 2rem; margin-bottom: 1rem;">📄</div>
                         <h3>Paper & Cardboard</h3>
                         <div style="margin: 1rem 0;">
-                            <div style="margin: 0.5rem 0;" id="display-newspapers">Newspapers: ₹8-12/kg</div>
-                            <div style="margin: 0.5rem 0;" id="display-books">Books: ₹6-10/kg</div>
-                            <div style="margin: 0.5rem 0;" id="display-cardboard">Cardboard: ₹5-8/kg</div>
+                            <div style="margin: 0.5rem 0;">Newspapers: ₹8-12/kg</div>
+                            <div style="margin: 0.5rem 0;">Books: ₹6-10/kg</div>
+                            <div style="margin: 0.5rem 0;">Cardboard: ₹5-8/kg</div>
                         </div>
                     </div>
                     
-                    <div class="pricing-card" style="background: #f7fafc; padding: 1.5rem; border-radius: 10px; text-align: center;">
+                    <div class="pricing-card">
                         <div style="font-size: 2rem; margin-bottom: 1rem;">♻️</div>
                         <h3>Plastic</h3>
                         <div style="margin: 1rem 0;">
-                            <div style="margin: 0.5rem 0;" id="display-pet">PET Bottles: ₹15-20/kg</div>
-                            <div style="margin: 0.5rem 0;" id="display-containers">Containers: ₹10-15/kg</div>
-                            <div style="margin: 0.5rem 0;" id="display-mixed-plastic">Mixed Plastic: ₹5-10/kg</div>
+                            <div style="margin: 0.5rem 0;">PET Bottles: ₹15-20/kg</div>
+                            <div style="margin: 0.5rem 0;">Containers: ₹10-15/kg</div>
+                            <div style="margin: 0.5rem 0;">Mixed Plastic: ₹5-10/kg</div>
                         </div>
                     </div>
                     
-                    <div class="pricing-card" style="background: #f7fafc; padding: 1.5rem; border-radius: 10px; text-align: center;">
+                    <div class="pricing-card">
                         <div style="font-size: 2rem; margin-bottom: 1rem;">🚗</div>
                         <h3>Automotive</h3>
                         <div style="margin: 1rem 0;">
-                            <div style="margin: 0.5rem 0;" id="display-batteries">Car Batteries: ₹150-200/piece</div>
-                            <div style="margin: 0.5rem 0;" id="display-tires">Tires: ₹50-100/piece</div>
-                            <div style="margin: 0.5rem 0;" id="display-auto-parts">Parts: ₹20-100/kg</div>
+                            <div style="margin: 0.5rem 0;">Car Batteries: ₹150-300/piece</div>
+                            <div style="margin: 0.5rem 0;">Tires: ₹50-150/piece</div>
+                            <div style="margin: 0.5rem 0;">Parts: ₹20-100/kg</div>
                         </div>
                     </div>
                     
-                    <div class="pricing-card" style="background: #f7fafc; padding: 1.5rem; border-radius: 10px; text-align: center;">
+                    <div class="pricing-card">
                         <div style="font-size: 2rem; margin-bottom: 1rem;">🏗️</div>
                         <h3>Construction</h3>
                         <div style="margin: 1rem 0;">
-                            <div style="margin: 0.5rem 0;" id="display-steel">Steel Rods: ₹35-45/kg</div>
-                            <div style="margin: 0.5rem 0;" id="display-concrete">Concrete: ₹2-5/kg</div>
-                            <div style="margin: 0.5rem 0;" id="display-tiles">Tiles: ₹3-8/kg</div>
+                            <div style="margin: 0.5rem 0;">Steel Rods: ₹35-45/kg</div>
+                            <div style="margin: 0.5rem 0;">Concrete: ₹2-5/kg</div>
+                            <div style="margin: 0.5rem 0;">Tiles: ₹3-8/kg</div>
                         </div>
                     </div>
                 </div>
                 
-                <div style="background: #667eea; color: white; padding: 2rem; border-radius: 10px; text-align: center; margin: 2rem 0;">
-                    <h3>Get the Best Price for Your Scrap!</h3>
-                    <p style="margin: 1rem 0;">Our experts will evaluate your materials and offer competitive rates based on current market prices.</p>
-                    <button class="btn btn-secondary" onclick="showTab('sell')" style="background: white; color: #667eea;">Submit Your Scrap Details</button>
+                <div style="background: #e6f7ff; padding: 1.5rem; border-radius: 10px; margin-top: 2rem;">
+                    <h3 style="color: #667eea; margin-bottom: 1rem;">💡 Price Notes</h3>
+                    <ul style="color: #666; line-height: 1.8;">
+                        <li>Prices vary based on quality, quantity, and current market conditions</li>
+                        <li>Higher quantities typically get better rates</li>
+                        <li>Clean, sorted materials fetch premium prices</li>
+                        <li>Free pickup available for orders above ₹500</li>
+                        <li>Prices updated daily based on market rates</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="success-content" class="tab-content hidden">
+                <div class="success-page">
+                    <div style="text-align: center; padding: 2rem 0;">
+                        <div style="font-size: 4rem; margin-bottom: 1rem;">✅</div>
+                        <h2 style="color: #10b981; margin-bottom: 1rem;">Order Successfully Placed!</h2>
+                        <p style="font-size: 1.2rem; color: #666; margin-bottom: 2rem;">Thank you for choosing Scrapy5. Your scrap selling request has been received.</p>
+                    </div>
+                    
+                    <div id="orderSummary" style="background: #f8f9fa; border-radius: 15px; padding: 2rem; margin: 2rem 0; max-width: 600px; margin-left: auto; margin-right: auto;">
+                        <h3 style="color: #667eea; margin-bottom: 1.5rem; text-align: center;">📋 Order Summary</h3>
+                        
+                        <div class="order-details">
+                            <div style="display: grid; gap: 1rem;">
+                                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #e2e8f0;">
+                                    <span style="font-weight: 600;">Material Type:</span>
+                                    <span id="orderMaterial">-</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #e2e8f0;">
+                                    <span style="font-weight: 600;">Item:</span>
+                                    <span id="orderItem">-</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #e2e8f0;">
+                                    <span style="font-weight: 600;">Quantity:</span>
+                                    <span id="orderQuantity">-</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #e2e8f0;">
+                                    <span style="font-weight: 600;">Location:</span>
+                                    <span id="orderLocation">-</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #e2e8f0;">
+                                    <span style="font-weight: 600;">Contact:</span>
+                                    <span id="orderContact">-</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #e2e8f0;">
+                                    <span style="font-weight: 600;">Photos Uploaded:</span>
+                                    <span id="orderPhotos">0</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0;">
+                                    <span style="font-weight: 600;">Submitted On:</span>
+                                    <span id="orderDate">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 15px; padding: 2rem; margin: 2rem 0; text-align: center;">
+                        <h3 style="margin-bottom: 1rem;">🕐 What Happens Next?</h3>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+                            <div>
+                                <div style="font-size: 2rem; margin-bottom: 0.5rem;">📞</div>
+                                <h4>Within 2 Hours</h4>
+                                <p style="font-size: 0.9rem; opacity: 0.9;">Our team will call you with a price quote</p>
+                            </div>
+                            <div>
+                                <div style="font-size: 2rem; margin-bottom: 0.5rem;">🚚</div>
+                                <h4>Schedule Pickup</h4>
+                                <p style="font-size: 0.9rem; opacity: 0.9;">We'll arrange a convenient pickup time</p>
+                            </div>
+                            <div>
+                                <div style="font-size: 2rem; margin-bottom: 0.5rem;">💰</div>
+                                <h4>Get Paid</h4>
+                                <p style="font-size: 0.9rem; opacity: 0.9;">Receive instant payment after verification</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="background: #fff3cd; border: 2px solid #ffc107; border-radius: 10px; padding: 1.5rem; margin: 2rem 0;">
+                        <h3 style="color: #856404; margin-bottom: 1rem;">📱 Save These Details</h3>
+                        <div style="color: #856404;">
+                            <p style="margin-bottom: 0.5rem;"><strong>Customer Support:</strong> +91-8356987877</p>
+                            <p style="margin-bottom: 0.5rem;"><strong>Email:</strong> scrapify05@gnail.com</p>
+                            <p style="margin-bottom: 0.5rem;"><strong>WhatsApp:</strong> +91-8356987877</p>
+                            <p><strong>Business Hours:</strong> 8:00 AM - 8:00 PM (Mon-Sun)</p>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 2rem;">
+                        <button class="btn btn-primary" onclick="showTab('sell')" style="margin-right: 1rem;">📝 Sell More Scrap</button>
+                        <button class="btn btn-secondary" onclick="showTab('pricing')">💰 View Pricing</button>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 2rem; padding: 1rem; background: #f0fff4; border-radius: 10px;">
+                        <h4 style="color: #059669; margin-bottom: 0.5rem;">🌱 Thank You for Contributing to a Greener Mumbai!</h4>
+                        <p style="color: #065f46; font-size: 0.9rem;">By recycling with Scrapy5, you're helping reduce waste and protect our environment.</p>
+                    </div>
                 </div>
             </div>
 
             <div id="how-it-works-content" class="tab-content hidden">
                 <h2>How Scrapy5 Works</h2>
-                <p style="text-align: center; margin-bottom: 2rem; color: #666;">Simple, transparent, and profitable way to sell your scrap in Mumbai</p>
+                <p style="text-align: center; margin-bottom: 2rem; color: #666;">Simple, transparent, and efficient scrap selling process</p>
                 
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin: 2rem 0;">
-                    <div style="text-align: center; padding: 2rem;">
-                        <div style="font-size: 3rem; margin-bottom: 1rem;">📝</div>
-                        <h3>1. Submit Your Scrap</h3>
-                        <p>Fill out our simple form with details about your scrap materials. Include type, quantity, and photos.</p>
+                <div class="steps-container">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <h3>Submit Details</h3>
+                        <p>Fill out our simple form with your scrap details, photos, and contact information. The more accurate information you provide, the better quote we can offer.</p>
                     </div>
                     
-                    <div style="text-align: center; padding: 2rem;">
-                        <div style="font-size: 3rem; margin-bottom: 1rem;">📞</div>
-                        <h3>2. Get Contacted</h3>
-                        <p>Our team will contact you within 24 hours to discuss pricing and arrange pickup.</p>
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <h3>Get Quote</h3>
+                        <p>Our team reviews your submission and contacts you within 2 hours with a competitive price quote based on current market rates.</p>
                     </div>
                     
-                    <div style="text-align: center; padding: 2rem;">
-                        <div style="font-size: 3rem; margin-bottom: 1rem;">🚚</div>
-                        <h3>3. Free Pickup</h3>
-                        <p>We'll come to your location in Mumbai for free pickup of your scrap materials.</p>
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <h3>Schedule Pickup</h3>
+                        <p>Once you accept our quote, we schedule a convenient pickup time. Our trained team will come to your location for collection.</p>
                     </div>
                     
-                    <div style="text-align: center; padding: 2rem;">
-                        <div style="font-size: 3rem; margin-bottom: 1rem;">💰</div>
-                        <h3>4. Get Paid</h3>
-                        <p>Receive instant payment in cash or bank transfer at the best market rates.</p>
-                    </div>
-                </div>
-
-                <div style="background: #f7fafc; padding: 2rem; border-radius: 10px; margin: 2rem 0;">
-                    <h3>Why Choose Scrapy5?</h3>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin: 1rem 0;">
-                        <div>✅ Mumbai's trusted scrap buyer</div>
-                        <div>✅ Best market prices guaranteed</div>
-                        <div>✅ Free pickup across Mumbai</div>
-                        <div>✅ Instant payment options</div>
-                        <div>✅ Transparent pricing</div>
-                        <div>✅ Environmentally responsible</div>
+                    <div class="step-card">
+                        <div class="step-number">4</div>
+                        <h3>Verification & Payment</h3>
+                        <p>Our team verifies the materials on-site, weighs them accurately, and provides immediate payment via cash, UPI.</p>
                     </div>
                 </div>
                 
-                <div style="background: #667eea; color: white; padding: 2rem; border-radius: 10px; text-align: center; margin: 2rem 0;">
-                    <h3>Ready to Sell Your Scrap?</h3>
-                    <p style="margin: 1rem 0;">Join hundreds of satisfied customers in Mumbai who trust Scrapy5 for their scrap selling needs.</p>
-                    <button class="btn btn-secondary" onclick="showTab('sell')" style="background: white; color: #667eea;">Start Selling Now</button>
+                <div style="background: #f0fff4; padding: 2rem; border-radius: 10px; margin-top: 2rem;">
+                    <h3 style="color: #10b981; margin-bottom: 1rem;">✅ Why Choose Scrapy5?</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                        <div>
+                            <h4 style="color: #667eea; margin-bottom: 0.5rem;">🏆 Best Prices</h4>
+                            <p style="color: #666;">Competitive rates based on real-time market prices</p>
+                        </div>
+                        <div>
+                            <h4 style="color: #667eea; margin-bottom: 0.5rem;">🚚 Free Pickup</h4>
+                            <p style="color: #666;">All over mumbai</p>
+                        </div>
+                        <div>
+                            <h4 style="color: #667eea; margin-bottom: 0.5rem;">⚖️ Accurate Weighing</h4>
+                            <p style="color: #666;">Certified digital scales for fair measurement</p>
+                        </div>
+                        <div>
+                            <h4 style="color: #667eea; margin-bottom: 0.5rem;">💳 Instant Payment</h4>
+                            <p style="color: #666;">Get paid immediately upon material verification</p>
+                        </div>
+                        <div>
+                            <h4 style="color: #667eea; margin-bottom: 0.5rem;">🌱 Eco-Friendly</h4>
+                            <p style="color: #666;">Proper recycling and environmental compliance</p>
+                        </div>
+                        <div>
+                            <h4 style="color: #667eea; margin-bottom: 0.5rem;">📞 24/7 Support</h4>
+                            <p style="color: #666;">Customer service available round the clock</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button class="btn btn-primary" onclick="showTab('sell')" style="font-size: 1.2rem; padding: 1rem 2rem;">Start Selling Now</button>
                 </div>
             </div>
         </div>
@@ -820,277 +909,309 @@
             <div class="footer-links">
                 <a href="#privacy">Privacy Policy</a>
                 <a href="#terms">Terms of Service</a>
-                <a href="#support">Support</a>
-                <a href="#blog">Blog</a>
+                <a href="#contact">Contact Us</a>
+                <a href="#about">About Scrapy5</a>
             </div>
-            <p>&copy; 2025 Scrapy5. All rights reserved. Mumbai's trusted scrap buyer since 2020.</p>
+            <p>&copy; 2021 Scrapy5. All rights reserved. | Mumbai's Trusted Scrap Buying Platform</p>
+            <p style="margin-top: 0.5rem; font-size: 0.9rem;">📞 Customer Care: +91-8356987877 | 📧 scrapify05@gmail.com</p>
         </div>
     </footer>
 
     <script>
         // Global variables
+        let currentStream = null;
         let capturedPhotos = [];
-        let uploadedFiles = [];
-        let stream = null;
-        
-        // Price management data structure
-        let currentPrices = {
-            iron: { base: 25, range: 5 },
-            copper: { base: 500, range: 100 },
-            aluminum: { base: 120, range: 30 },
-            smartphones: { base: 200, range: 1800 },
-            laptops: { base: 500, range: 4500 },
-            components: { base: 50, range: 450 },
-            newspapers: { base: 8, range: 4 },
-            books: { base: 6, range: 4 },
-            cardboard: { base: 5, range: 3 },
-            pet: { base: 15, range: 5 },
-            containers: { base: 10, range: 5 },
-            'mixed-plastic': { base: 5, range: 5 },
-            batteries: { base: 150, range: 50 },
-            tires: { base: 50, range: 50 },
-            'auto-parts': { base: 20, range: 80 },
-            steel: { base: 35, range: 10 },
-            concrete: { base: 2, range: 3 },
-            tiles: { base: 3, range: 5 }
-        };
+        let currentPosition = null;
 
-        // Form submission handling
-        document.addEventListener("DOMContentLoaded", function () {
-            console.log("🟢 Page loaded successfully");
-            
-            const form = document.getElementById("listingForm");
-            if (!form) {
-                console.error("❌ Form with id 'listingForm' not found!");
-                return;
-            }
-            
-            console.log("✅ Form found, adding event listener");
-            
-            form.addEventListener("submit", function (event) {
-                console.log("🚀 Form submission triggered");
-                event.preventDefault();
-                
-                const submitButton = form.querySelector('button[type="submit"]');
-                const originalText = submitButton.textContent;
-                submitButton.textContent = 'Submitting...';
-                submitButton.disabled = true;
-                
-                try {
-                    const formData = new FormData(form);
-                    
-                    // Clear existing file inputs and add all files
-                    formData.delete('fileInput');
-                    
-                    // Add uploaded files
-                    uploadedFiles.forEach((file, index) => {
-                        formData.append("fileInput", file);
-                    });
-                    
-                    // Convert captured photos to files and add them
-                    capturedPhotos.forEach((photoData, index) => {
-                        const blob = dataURLtoBlob(photoData);
-                        const file = new File([blob], `captured_photo_${index + 1}.jpg`, { type: 'image/jpeg' });
-                        formData.append("fileInput", file);
-                    });
-                    
-                    console.log(`📁 Total files being sent: ${uploadedFiles.length + capturedPhotos.length}`);
-                    console.log("🌐 Sending POST request to /submit_listing");
-
-                    fetch("/submit_listing", {
-                        method: "POST",
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            console.log("✅ Success!");
-                            showMessage("✅ Success! Your listing was submitted.", 'success');
-                            resetForm();
-                        } else {
-                            console.log("❌ Server error:", data.message);
-                            showMessage("❌ Failed: " + data.message, 'error');
-                        }
-                    })
-                    .catch(error => {
-                        console.error("💥 Network error:", error);
-                        showMessage("❌ Network error occurred during submission.", 'error');
-                    })
-                    .finally(() => {
-                        submitButton.textContent = originalText;
-                        submitButton.disabled = false;
-                    });
-                    
-                } catch (error) {
-                    console.error("💥 JavaScript error:", error);
-                    showMessage("❌ Error occurred during submission.", 'error');
-                    submitButton.textContent = originalText;
-                    submitButton.disabled = false;
-                }
-            });
-            
-            // Initialize prices display
-            updatePriceDisplays();
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            updatePhotoCount();
         });
 
-        // Helper function to convert dataURL to Blob
-        function dataURLtoBlob(dataURL) {
-            const arr = dataURL.split(',');
-            const mime = arr[0].match(/:(.*?);/)[1];
-            const bstr = atob(arr[1]);
-            let n = bstr.length;
-            const u8arr = new Uint8Array(n);
-            while (n--) {
-                u8arr[n] = bstr.charCodeAt(n);
-            }
-            return new Blob([u8arr], { type: mime });
-        }
-
-        // Reset form function
-        function resetForm() {
-            document.getElementById("listingForm").reset();
-            capturedPhotos = [];
-            uploadedFiles = [];
-            updatePhotoCount();
-            displayPhotos();
-        }
-
-        // Show message function
-        function showMessage(message, type) {
-            const messageContainer = document.getElementById('messageContainer');
-            messageContainer.innerHTML = `<div class="${type}-message">${message}</div>`;
-            
-            setTimeout(() => {
-                messageContainer.innerHTML = '';
-            }, 5000);
-        }
-
-        // Category selection
-        function selectCategory(category) {
-            document.querySelectorAll('.category-card').forEach(card => {
-                card.classList.remove('selected');
-            });
-            
-            event.target.closest('.category-card').classList.add('selected');
-            document.getElementById('materialType').value = category;
-        }
-
-        // Navigation functions
-        function showSellForm() {
-            showTab('sell');
-            document.querySelector('.tab[onclick="showTab(\'sell\')"]').scrollIntoView({ behavior: 'smooth' });
-        }
-
+        // Tab switching functionality
         function showTab(tabName) {
+            // Hide all tab contents
             document.querySelectorAll('.tab-content').forEach(content => {
                 content.classList.add('hidden');
             });
             
+            // Remove active class from all tabs
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.classList.remove('active');
             });
             
+            // Show selected tab content
             document.getElementById(tabName + '-content').classList.remove('hidden');
+            
+            // Add active class to clicked tab
             event.target.classList.add('active');
         }
 
-        // Photo management functions
-        function updatePhotoCount() {
-            const photoCount = document.getElementById('photoCount');
-            const count = uploadedFiles.length + capturedPhotos.length;
-            photoCount.textContent = `${count}/5`;
-        }
-
-        function handleFileSelect(event) {
-            const files = Array.from(event.target.files);
-            const remainingSlots = 5 - (uploadedFiles.length + capturedPhotos.length);
-            
-            if (files.length > remainingSlots) {
-                showMessage(`You can only add ${remainingSlots} more photos. Maximum 5 photos allowed.`, 'error');
-                files.splice(remainingSlots);
-            }
-            
-            uploadedFiles = uploadedFiles.concat(files);
-            console.log(`📁 Files selected: ${files.length}, Total: ${uploadedFiles.length + capturedPhotos.length}`);
-            
-            displayPhotos();
-            updatePhotoCount();
-        }
-
-        function displayPhotos() {
-            const preview = document.getElementById('photoPreview');
-            preview.innerHTML = '';
-            
-            // Display uploaded files
-            uploadedFiles.forEach((file, index) => {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const photoItem = document.createElement('div');
-                    photoItem.className = 'photo-item';
-                    photoItem.innerHTML = `
-                        <img src="${e.target.result}" alt="Upload ${index + 1}">
-                        <button type="button" class="photo-remove" onclick="removeUploadedPhoto(${index})">&times;</button>
-                    `;
-                    preview.appendChild(photoItem);
-                };
-                reader.readAsDataURL(file);
+        // Category selection
+        function selectCategory(category) {
+            // Remove selected class from all categories
+            document.querySelectorAll('.category-card').forEach(card => {
+                card.classList.remove('selected');
             });
             
-            // Display captured photos
-            capturedPhotos.forEach((photo, index) => {
-                const photoItem = document.createElement('div');
-                photoItem.className = 'photo-item';
-                photoItem.innerHTML = `
-                    <img src="${photo}" alt="Captured ${index + 1}">
-                    <button type="button" class="photo-remove" onclick="removeCapturedPhoto(${index})">&times;</button>
-                `;
-                preview.appendChild(photoItem);
-            });
+            // Add selected class to clicked category
+            event.target.classList.add('selected');
+            
+            // Update the material type in the form
+            const materialSelect = document.getElementById('materialType');
+            materialSelect.value = category;
         }
 
-        function removeUploadedPhoto(index) {
-            uploadedFiles.splice(index, 1);
-            displayPhotos();
-            updatePhotoCount();
+        // Show sell form
+        function showSellForm() {
+            showTab('sell');
+            document.querySelector('.main-content').scrollIntoView({ behavior: 'smooth' });
         }
 
-        function removeCapturedPhoto(index) {
-            capturedPhotos.splice(index, 1);
-            displayPhotos();
-            updatePhotoCount();
-        }
-
-        // Camera functions
-        async function startCamera() {
-            const totalPhotos = uploadedFiles.length + capturedPhotos.length;
-            if (totalPhotos >= 5) {
-                showMessage("Maximum 5 photos allowed. Please remove some photos first.", 'error');
+        // ENHANCED LOCATION FUNCTIONS
+        async function getCurrentLocation() {
+            const locationBtn = document.getElementById('locationBtn');
+            const locationStatus = document.getElementById('locationStatus');
+            const locationInput = document.getElementById('listingLocation');
+            
+            if (!navigator.geolocation) {
+                showLocationStatus('Geolocation is not supported by this browser. Please enter your address manually.', 'error');
                 return;
             }
             
+            locationBtn.textContent = '🔄 Getting Location...';
+            locationBtn.disabled = true;
+            showLocationStatus('Detecting your location...', 'loading');
+            
+            navigator.geolocation.getCurrentPosition(
+                async function(position) {
+                    currentPosition = position;
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    
+                    showLocationStatus('Location detected! Getting address details...', 'loading');
+                    
+                    try {
+                        // Try to get detailed address using reverse geocoding
+                        const address = await reverseGeocode(lat, lon);
+                        
+                        if (address && address.formatted) {
+                            locationInput.value = address.formatted;
+                            showLocationStatus('✅ Complete address detected successfully!', 'success');
+                            locationBtn.textContent = '📍 Address Added';
+                        } else {
+                            throw new Error('Unable to get detailed address');
+                        }
+                        
+                    } catch (error) {
+                        console.error('Geocoding error:', error);
+                        
+                        // Fallback to coordinates with Mumbai
+                        locationInput.value = `Lat: ${lat.toFixed(6)}, Lon: ${lon.toFixed(6)}, Mumbai`;
+                        showLocationStatus('⚠️ Got coordinates but could not fetch detailed address. Please edit the location above.', 'warning');
+                        locationBtn.textContent = '📍 Manual Edit Needed';
+                    }
+                    
+                    setTimeout(() => {
+                        resetLocationButton();
+                        clearLocationStatus();
+                    }, 5000);
+                },
+                function(error) {
+                    let errorMessage = 'Unable to get location. ';
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED:
+                            errorMessage += 'Please allow location access in your browser settings.';
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            errorMessage += 'Location information unavailable. Please check your GPS/network connection.';
+                            break;
+                        case error.TIMEOUT:
+                            errorMessage += 'Location request timed out. Please try again.';
+                            break;
+                        default:
+                            errorMessage += 'Unknown error occurred.';
+                            break;
+                    }
+                    
+                    showLocationStatus(errorMessage, 'error');
+                    resetLocationButton();
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 15000,
+                    maximumAge: 300000 // 5 minutes
+                }
+            );
+        }
+
+        // Reverse geocoding function using OpenStreetMap Nominatim API
+        async function reverseGeocode(lat, lon) {
             try {
-                stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { 
-                        facingMode: 'environment',
-                        width: { ideal: 1280 },
-                        height: { ideal: 720 }
-                    } 
+                const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`;
+                
+                const response = await fetch(url, {
+                    headers: {
+                        'User-Agent': 'Scrapy5-Mumbai-Scrap-Platform'
+                    }
                 });
                 
-                const video = document.getElementById('cameraVideo');
-                const controls = document.getElementById('captureControls');
-                const buttons = document.getElementById('cameraButtons');
+                if (!response.ok) {
+                    throw new Error('Geocoding API error');
+                }
                 
-                video.srcObject = stream;
-                video.classList.remove('hidden');
-                controls.classList.remove('hidden');
-                buttons.style.display = 'none';
+                const data = await response.json();
                 
-                console.log("📷 Camera started");
+                if (!data || !data.address) {
+                    throw new Error('No address data received');
+                }
+                
+                return parseAddress(data);
+                
             } catch (error) {
-                console.error("❌ Camera error:", error);
-                showMessage("Could not access camera. Please check permissions or use the upload option.", 'error');
+                console.error('Reverse geocoding failed:', error);
+                return null;
             }
+        }
+
+        // Parse the geocoding response into a Mumbai-format address
+        function parseAddress(data) {
+            const addr = data.address;
+            const addressParts = [];
+            
+            // Building/House number
+            if (addr.house_number) {
+                addressParts.push(addr.house_number);
+            }
+            
+            // Building name or amenity
+            if (addr.amenity || addr.building) {
+                addressParts.push(addr.amenity || addr.building);
+            }
+            
+            // Street/Road name
+            if (addr.road || addr.street) {
+                addressParts.push(addr.road || addr.street);
+            }
+            
+            // Neighbourhood/Area (important for Mumbai addresses)
+            if (addr.neighbourhood) {
+                addressParts.push(addr.neighbourhood);
+            } else if (addr.suburb) {
+                addressParts.push(addr.suburb);
+            } else if (addr.residential) {
+                addressParts.push(addr.residential);
+            }
+            
+            // Locality/Area
+            if (addr.locality && !addressParts.includes(addr.locality)) {
+                addressParts.push(addr.locality);
+            }
+            
+            // City district or area (like "Mulund West", "Andheri East")
+            if (addr.city_district && !addressParts.join(' ').toLowerCase().includes(addr.city_district.toLowerCase())) {
+                addressParts.push(addr.city_district);
+            }
+            
+            // City - prioritize Mumbai or use detected city
+            const city = addr.city || addr.town || addr.municipality;
+            if (city) {
+                addressParts.push(city);
+            } else if (!addressParts.join(' ').toLowerCase().includes('mumbai')) {
+                addressParts.push('Mumbai');
+            }
+            
+            // State - add if not already present
+            if (addr.state && !addressParts.join(' ').includes('Maharashtra')) {
+                addressParts.push('Maharashtra');
+            }
+            
+            // Pincode
+            if (addr.postcode) {
+                addressParts.push(addr.postcode);
+            }
+            
+            // Create formatted address
+            const formatted = addressParts.join(', ');
+            
+            return {
+                formatted: formatted,
+                components: {
+                    building: addr.house_number || addr.building || '',
+                    street: addr.road || addr.street || '',
+                    area: addr.neighbourhood || addr.suburb || '',
+                    locality: addr.locality || '',
+                    district: addr.city_district || '',
+                    city: city || 'Mumbai',
+                    state: addr.state || 'Maharashtra',
+                    pincode: addr.postcode || '',
+                    country: addr.country || 'India'
+                }
+            };
+        }
+
+        // Location status display functions
+        function showLocationStatus(message, type) {
+            const locationStatus = document.getElementById('locationStatus');
+            locationStatus.className = `location-${type}`;
+            locationStatus.textContent = message;
+        }
+
+        function clearLocationStatus() {
+            const locationStatus = document.getElementById('locationStatus');
+            setTimeout(() => {
+                if (locationStatus.className.includes('success') || locationStatus.className.includes('warning')) {
+                    locationStatus.textContent = '';
+                    locationStatus.className = '';
+                }
+            }, 3000);
+        }
+
+        // Helper function to reset location button
+        function resetLocationButton() {
+            const locationBtn = document.getElementById('locationBtn');
+            locationBtn.textContent = '📍 Get Location';
+            locationBtn.disabled = false;
+        }
+
+        // Camera functionality
+        function startCamera() {
+            const video = document.getElementById('cameraVideo');
+            const cameraButtons = document.getElementById('cameraButtons');
+            const captureControls = document.getElementById('captureControls');
+            
+            if (capturedPhotos.length >= 5) {
+                showMessage('You can upload maximum 5 photos', 'error');
+                return;
+            }
+            
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+                .then(function(stream) {
+                    currentStream = stream;
+                    video.srcObject = stream;
+                    video.classList.remove('hidden');
+                    cameraButtons.classList.add('hidden');
+                    captureControls.classList.remove('hidden');
+                })
+                .catch(function(error) {
+                    console.error('Error accessing camera:', error);
+                    showMessage('Unable to access camera. Please check permissions.', 'error');
+                });
+        }
+
+        function stopCamera() {
+            const video = document.getElementById('cameraVideo');
+            const cameraButtons = document.getElementById('cameraButtons');
+            const captureControls = document.getElementById('captureControls');
+            
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+                currentStream = null;
+            }
+            
+            video.classList.add('hidden');
+            cameraButtons.classList.remove('hidden');
+            captureControls.classList.add('hidden');
         }
 
         function capturePhoto() {
@@ -1098,177 +1219,216 @@
             const canvas = document.getElementById('cameraCanvas');
             const context = canvas.getContext('2d');
             
-            // Set canvas dimensions to match video
+            if (capturedPhotos.length >= 5) {
+                showMessage('Maximum 5 photos allowed', 'error');
+                return;
+            }
+            
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
             
-            // Draw video frame to canvas
-            context.drawImage(video, 0, 0);
-            
-            // Convert to data URL with compression
-            const photoData = canvas.toDataURL('image/jpeg', 0.8);
-            capturedPhotos.push(photoData);
-            
-            console.log("📸 Photo captured");
-            showMessage("Photo captured successfully!", 'success');
-            
-            displayPhotos();
-            updatePhotoCount();
-            stopCamera();
+            canvas.toBlob(function(blob) {
+                const file = new File([blob], `photo_${Date.now()}.jpg`, { type: 'image/jpeg' });
+                addPhotoToPreview(file);
+                stopCamera();
+            }, 'image/jpeg', 0.8);
         }
 
-        function stopCamera() {
-            if (stream) {
-                stream.getTracks().forEach(track => track.stop());
-                stream = null;
+        // File handling
+        function handleFileSelect(event) {
+            const files = Array.from(event.target.files);
+            
+            if (capturedPhotos.length + files.length > 5) {
+                showMessage(`You can only upload ${5 - capturedPhotos.length} more photo(s)`, 'error');
+                return;
             }
             
-            const video = document.getElementById('cameraVideo');
-            const controls = document.getElementById('captureControls');
-            const buttons = document.getElementById('cameraButtons');
-            
-            video.classList.add('hidden');
-            controls.classList.add('hidden');
-            buttons.style.display = 'flex';
-            
-            console.log("📷 Camera stopped");
-        }
-
-        // Price Management Functions
-        function togglePriceManagement() {
-            const panel = document.getElementById('priceManagement');
-            if (panel.classList.contains('show')) {
-                panel.classList.remove('show');
-            } else {
-                panel.classList.add('show');
-                loadCurrentPrices();
-            }
-        }
-
-        function loadCurrentPrices() {
-            // Load saved prices from localStorage or use defaults
-            const savedPrices = localStorage.getItem('scrapy5_prices');
-            if (savedPrices) {
-                currentPrices = JSON.parse(savedPrices);
-            }
-            
-            // Update input fields
-            Object.keys(currentPrices).forEach(key => {
-                const input = document.getElementById(`price-${key}`);
-                if (input) {
-                    input.value = currentPrices[key].base;
+            files.forEach(file => {
+                if (file.type.startsWith('image/')) {
+                    addPhotoToPreview(file);
                 }
             });
+            
+            // Clear the file input
+            event.target.value = '';
         }
 
-        function updatePrices() {
-            try {
-                // Get values from input fields
-                Object.keys(currentPrices).forEach(key => {
-                    const input = document.getElementById(`price-${key}`);
-                    if (input && input.value) {
-                        currentPrices[key].base = parseInt(input.value);
-                    }
+        function addPhotoToPreview(file) {
+            if (capturedPhotos.length >= 5) {
+                showMessage('Maximum 5 photos allowed', 'error');
+                return;
+            }
+            
+            capturedPhotos.push(file);
+            
+            const preview = document.getElementById('photoPreview');
+            const photoItem = document.createElement('div');
+            photoItem.className = 'photo-item';
+            
+            const img = document.createElement('img');
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+            
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'photo-remove';
+            removeBtn.innerHTML = '×';
+            removeBtn.onclick = function() {
+                const index = capturedPhotos.indexOf(file);
+                if (index > -1) {
+                    capturedPhotos.splice(index, 1);
+                    photoItem.remove();
+                    updatePhotoCount();
+                }
+            };
+            
+            photoItem.appendChild(img);
+            photoItem.appendChild(removeBtn);
+            preview.appendChild(photoItem);
+            
+            updatePhotoCount();
+        }
+
+        function updatePhotoCount() {
+            document.getElementById('photoCount').textContent = `${capturedPhotos.length}/5`;
+        }
+
+        // Form submission
+        document.getElementById('listingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            
+            // Add photos to form data
+            capturedPhotos.forEach((photo, index) => {
+                formData.append(`photo_${index}`, photo);
+            });
+            
+            // Show loading message
+            showMessage('Submitting your scrap details...', 'success');
+            
+            // Simulate API call delay
+            setTimeout(() => {
+                // Generate order ID
+                const orderId = 'SCR-' + Math.floor(100000 + Math.random() * 900000);
+                
+                // Populate success page with form data
+                populateSuccessPage(formData, orderId);
+                
+                // Show success page
+                showSuccessPage();
+                
+                // Reset form
+                this.reset();
+                capturedPhotos = [];
+                document.getElementById('photoPreview').innerHTML = '';
+                updatePhotoCount();
+                
+                // Remove selected category
+                document.querySelectorAll('.category-card').forEach(card => {
+                    card.classList.remove('selected');
                 });
                 
-                // Save to localStorage
-                localStorage.setItem('scrapy5_prices', JSON.stringify(currentPrices));
-                
-                // Update displays
-                updatePriceDisplays();
-                
-                showMessage("✅ Prices updated successfully!", 'success');
-                
-                // Hide price management panel
-                document.getElementById('priceManagement').classList.remove('show');
-                
-            } catch (error) {
-                console.error("Error updating prices:", error);
-                showMessage("❌ Error updating prices. Please try again.", 'error');
-            }
+                // Clear any messages
+                document.getElementById('messageContainer').innerHTML = '';
+            }, 2000);
+        });
+
+        // Show success page
+        function showSuccessPage() {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show success page
+            document.getElementById('success-content').classList.remove('hidden');
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function resetPrices() {
-            // Reset to default values
-            currentPrices = {
-                iron: { base: 25, range: 5 },
-                copper: { base: 500, range: 100 },
-                aluminum: { base: 120, range: 30 },
-                smartphones: { base: 200, range: 1800 },
-                laptops: { base: 500, range: 4500 },
-                components: { base: 50, range: 450 },
-                newspapers: { base: 8, range: 4 },
-                books: { base: 6, range: 4 },
-                cardboard: { base: 5, range: 3 },
-                pet: { base: 15, range: 5 },
-                containers: { base: 10, range: 5 },
-                'mixed-plastic': { base: 5, range: 5 },
-                batteries: { base: 150, range: 50 },
-                tires: { base: 50, range: 50 },
-                'auto-parts': { base: 20, range: 80 },
-                steel: { base: 35, range: 10 },
-                concrete: { base: 2, range: 3 },
-                tiles: { base: 3, range: 5 }
+        // Populate success page with order details
+        function populateSuccessPage(formData, orderId) {
+            const materialTypes = {
+                'metal': 'Metal Scrap',
+                'electronics': 'Electronics',
+                'paper': 'Paper & Cardboard',
+                'plastic': 'Plastic',
+                'automotive': 'Automotive',
+                'construction': 'Construction'
             };
             
-            // Clear localStorage
-            localStorage.removeItem('scrapy5_prices');
+            // Set order details
+            document.getElementById('orderId').textContent = orderId;
+            document.getElementById('customerName').textContent = formData.get('sellerName') || '-';
+            document.getElementById('orderMaterial').textContent = materialTypes[formData.get('materialType')] || formData.get('materialType') || '-';
+            document.getElementById('orderItem').textContent = formData.get('listingTitle') || '-';
+            document.getElementById('orderQuantity').textContent = formData.get('listingQuantity') || '-';
+            document.getElementById('orderLocation').textContent = formData.get('listingLocation') || '-';
+            document.getElementById('orderContact').textContent = formData.get('listingContact') || '-';
+            document.getElementById('orderPhotos').textContent = capturedPhotos.length;
             
-            // Update input fields
-            loadCurrentPrices();
-            
-            // Update displays
-            updatePriceDisplays();
-            
-            showMessage("✅ Prices reset to default values!", 'success');
+            // Set current date and time
+            const now = new Date();
+            const options = { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric', 
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: true 
+            };
+            document.getElementById('orderDate').textContent = now.toLocaleDateString('en-IN', options);
         }
 
-        function updatePriceDisplays() {
-            // Load saved prices
-            const savedPrices = localStorage.getItem('scrapy5_prices');
-            if (savedPrices) {
-                currentPrices = JSON.parse(savedPrices);
-            }
+        // Utility functions
+        function showMessage(message, type) {
+            const messageContainer = document.getElementById('messageContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = type === 'success' ? 'success-message' : 'error-message';
+            messageDiv.textContent = message;
             
-            // Update display elements
-            const priceDisplays = {
-                'iron': 'Iron',
-                'copper': 'Copper', 
-                'aluminum': 'Aluminum',
-                'smartphones': 'Smartphones',
-                'laptops': 'Laptops',
-                'components': 'Components',
-                'newspapers': 'Newspapers',
-                'books': 'Books',
-                'cardboard': 'Cardboard',
-                'pet': 'PET Bottles',
-                'containers': 'Containers',
-                'mixed-plastic': 'Mixed Plastic',
-                'batteries': 'Car Batteries',
-                'tires': 'Tires',
-                'auto-parts': 'Parts',
-                'steel': 'Steel Rods',
-                'concrete': 'Concrete',
-                'tiles': 'Tiles'
-            };
+            messageContainer.innerHTML = '';
+            messageContainer.appendChild(messageDiv);
             
-            Object.keys(priceDisplays).forEach(key => {
-                const element = document.getElementById(`display-${key}`);
-                if (element && currentPrices[key]) {
-                    const { base, range } = currentPrices[key];
-                    const min = base;
-                    const max = base + range;
-                    const unit = ['smartphones', 'laptops', 'batteries', 'tires'].includes(key) ? '/piece' : '/kg';
-                    element.textContent = `${priceDisplays[key]}: ₹${min}-${max}${unit}`;
+            // Auto hide message after 5 seconds
+            setTimeout(() => {
+                messageDiv.remove();
+            }, 5000);
+            
+            // Scroll to message
+            messageDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
                 }
             });
-        }
-
-        // Initialize on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            updatePhotoCount();
-            updatePriceDisplays();
         });
     </script>
+
 </body>
-</html>
+</html>8f0;">
+                                    <span style="font-weight: 600;">Order ID:</span>
+                                    <span id="orderId" style="color: #667eea; font-weight: bold;">SCR-001234</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #e2e8f0;">
+                                    <span style="font-weight: 600;">Customer Name:</span>
+                                    <span id="customerName">-</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #e2e

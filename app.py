@@ -44,6 +44,35 @@ class ScrapPrice(db.Model):
     
     __table_args__ = (db.UniqueConstraint('category', 'subcategory'),)
 
+# ========== KEEP ALIVE ENDPOINTS (NEW) ==========
+
+@app.route('/health')
+def health_check():
+    """Enhanced health check endpoint for keep-alive monitoring"""
+    return jsonify({
+        'status': 'healthy',
+        'timestamp': datetime.now().isoformat(),
+        'uptime': 'running',
+        'service': 'scrapy5-api',
+        'database': 'connected'
+    })
+
+@app.route('/ping')
+def ping():
+    """Simple ping endpoint for monitoring services"""
+    return "pong", 200
+
+@app.route('/wake')
+def wake():
+    """Wake endpoint specifically for keep-alive services"""
+    return jsonify({
+        'status': 'awake',
+        'timestamp': datetime.now().isoformat(),
+        'message': 'Server is running normally'
+    })
+
+# ========== EXISTING ROUTES (UNCHANGED) ==========
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -544,16 +573,6 @@ def initialize_default_prices():
             'message': f'Error initializing prices: {str(e)}'
         })
 
-@app.route('/health')
-def health_check():
-    """Health check endpoint"""
-    return jsonify({
-        'status': 'healthy',
-        'timestamp': datetime.now().isoformat(),
-        'upload_folder': app.config['UPLOAD_FOLDER'],
-        'database': 'connected'
-    })
-
 if __name__ == '__main__':
     with app.app_context():
         try:
@@ -575,6 +594,10 @@ if __name__ == '__main__':
     print("💾 Database:", app.config['SQLALCHEMY_DATABASE_URI'])
     print("🌐 Server will be available at: http://localhost:5000")
     print("🔧 Admin panel will be available at: http://localhost:5000/admin")
+    print("\n🔄 Keep-Alive Endpoints:")
+    print("   GET  /health - Enhanced health check (recommended for monitoring)")
+    print("   GET  /ping - Simple ping endpoint")
+    print("   GET  /wake - Wake endpoint")
     print("\n📋 Available Admin API Endpoints:")
     print("   GET  /admin/submissions - View all submissions with search/filter")
     print("   GET  /admin/dashboard-stats - Dashboard statistics")
